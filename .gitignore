@@ -1,0 +1,38 @@
+for_kevin/
+**/TEACHING_NOTES.md
+# macOS system files
+.DS_Store
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+**/.env
+
+# TypeScript
+*.tsbuildinfo
+
+# VSCode
+.vscode/
+
+# Coverage
+coverage/
+
+# Dist/output
+dist/
+out/
+build/
+
+# Logs
+logs/
+*.log
+
+# Course modules in progress (exclude until finalized)
+governed-ai-feature-delivery/module-03-workflow-vs-agent-design/
+governed-ai-feature-delivery/module-04-security-and-guardrails/
+governed-ai-feature-delivery/module-05-frontend-ai-ux-patterns/
+governed-ai-feature-delivery/module-06-evaluation-and-quality-assurance/
+governed-ai-feature-delivery/module-07-deployment-and-governance/
+governed-ai-feature-delivery/module-08-final-build-and-review/

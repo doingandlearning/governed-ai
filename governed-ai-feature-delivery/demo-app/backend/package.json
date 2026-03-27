@@ -1,0 +1,25 @@
+{
+  "name": "governed-ai-demo-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node --env-file=.env dist/index.js",
+    "dev": "node --env-file=.env --require ts-node/register src/index.ts",
+    "start:nest": "node --env-file=.env dist/main.nest.js",
+    "dev:nest": "node --env-file=.env --require ts-node/register src/main.nest.ts"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@mastra/core": "^1.17.0",
+    "@nestjs/common": "^11.1.17",
+    "@nestjs/core": "^11.1.17",
+    "@nestjs/platform-express": "^11.1.17",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  }
+}
