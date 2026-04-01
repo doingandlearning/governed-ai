@@ -30,3 +30,9 @@ logs/
 *.log
 
 # Course modules in progress (exclude until finalized)
+
+# Local slide export tooling (not needed by learners)
+governed-ai-feature-delivery/package.json
+governed-ai-feature-delivery/package-lock.json
+governed-ai-feature-delivery/node_modules/
+governed-ai-feature-delivery/scripts/
