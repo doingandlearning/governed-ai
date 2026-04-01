@@ -1,0 +1,26 @@
+/* PDF print tuning for markdown-heavy decks (especially tables). */
+.reveal .slides section {
+  font-size: 0.9em;
+}
+
+.reveal table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 0.72em;
+}
+
+.reveal table th,
+.reveal table td {
+  border: 1px solid #ccc;
+  padding: 0.35em 0.45em;
+  vertical-align: top;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.reveal pre code {
+  max-height: 520px;
+}

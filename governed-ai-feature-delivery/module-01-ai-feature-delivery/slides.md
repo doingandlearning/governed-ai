@@ -17,7 +17,7 @@ AI features behave differently from traditional backend features.
 
 ---
 
-## What “governed” means
+## What "governed" means
 
 - <span class="fragment">Traceable requests</span>
 - <span class="fragment">Versioned prompts and models</span>
@@ -39,7 +39,7 @@ AI features behave differently from traditional backend features.
 ## Traditional vs AI Feature: Output Behavior
 
 | Traditional feature | AI feature               |
-| -------------------| ------------------------ |
+| ------------------- | ------------------------ |
 | Deterministic      | Probabilistic / variable |
 
 <span class="fragment">Traditional: Same input always gives the same output.</span>  
@@ -51,7 +51,7 @@ AI features behave differently from traditional backend features.
 ## Traditional vs AI Feature: Testing Approach
 
 | Traditional feature                 | AI feature                                 |
-| ------------------------------------| -------------------------------------------|
+| ------------------------------------ | ------------------------------------------- |
 | Unit/integration mostly enough      | Needs eval datasets + quality thresholds   |
 
 <span class="fragment">Traditional: Unit and integration tests are typically sufficient.</span>  
@@ -63,7 +63,7 @@ AI features behave differently from traditional backend features.
 ## Traditional vs AI Feature: Change Risk
 
 | Traditional feature     | AI feature                             |
-| -----------------------| ---------------------------------------|
+| ----------------------- | --------------------------------------- |
 | Mostly code changes    | Code + prompt + model + data drift     |
 
 <span class="fragment">Traditional: Most risk comes from code changes and deployments.</span>  
@@ -75,7 +75,7 @@ AI features behave differently from traditional backend features.
 ## Traditional vs AI Feature: Observability Need
 
 | Traditional feature   | AI feature                                  |
-| ---------------------| --------------------------------------------|
+| --------------------- | -------------------------------------------- |
 | Logs and metrics     | Logs, traces, prompt/model provenance        |
 
 <span class="fragment">Traditional: Basic logs and service metrics usually suffice for diagnosis.</span>  
@@ -84,8 +84,9 @@ AI features behave differently from traditional backend features.
 
 ---
 
-<blockquote class="fragment"><b>Key point:</b> AI features require a broader and deeper engineering contract.</blockquote>
+<blockquote><b>Key point:</b> AI features require a broader and deeper engineering contract.</blockquote>
 
+<span class="fragment">Same engineering discipline — expanded control surface.</span>
 
 ---
 
@@ -112,12 +113,12 @@ AI features behave differently from traditional backend features.
 
 ## Where logic should live
 
-| Put it in...            | Typical responsibilities                                  |
-| ----------------------- | --------------------------------------------------------- |
-| Backend code            | Workflow sequence, retries, policy branching              |
-| Prompt assets in code   | Task instructions, output format constraints              |
-| Config                  | Model selection, thresholds, feature flags                |
-| Infrastructure          | Deployment policy, secrets, regional routing, monitoring  |
+| Put it in...          | Typical responsibilities                                  | Example                                   |
+| --------------------- | --------------------------------------------------------- | ----------------------------------------- |
+| Backend code          | Workflow sequence, retries, policy branching              | Retry if confidence score below threshold |
+| Prompt assets in code | Task instructions, output format constraints              | Extraction schema and field definitions   |
+| Config                | Model selection, thresholds, feature flags                | Model name, confidence threshold, region  |
+| Infrastructure        | Deployment policy, secrets, regional routing, monitoring  | EU/US routing rules, secrets management   |
 
 ---
 
@@ -165,14 +166,18 @@ Build an AI-powered document-processing feature that:
 - <span class="fragment">Applies validation and guardrails</span>
 - <span class="fragment">Surfaces outputs in a reviewable UI</span>
 
+<span class="fragment">This scenario was chosen deliberately: it combines extraction, classification, validation, and review — touching every layer of the governed architecture.</span>
+
+<span class="fragment">The same feature thread runs through all eight modules.</span>
+
 ---
 
 ## What we deliver by the end of Module 1
 
 - <span class="fragment">Shared architecture diagram</span>
 - <span class="fragment">Agreed request lifecycle and control points</span>
-- <span class="fragment">Initial definition of "governed" for this organization</span>
-- <span class="fragment">A baseline pattern to reuse in modules 2-8</span>
+- <span class="fragment">Initial definition of "governed" for this organisation</span>
+- <span class="fragment">A baseline pattern to reuse in modules 2–8</span>
 
 ---
 
@@ -195,8 +200,9 @@ Build an AI-powered document-processing feature that:
 **What's next:**
 
 - <span class="fragment">Implement the backend workflow pattern in NestJS.</span>
+- <span class="fragment">Your first task: build the NestJS service skeleton that owns the orchestration boundary. You already know what it's responsible for — now you'll build it.</span>
 
-Module 2 turns this architecture into reusable implementation structure.
+<span class="fragment">Module 2 turns this architecture into reusable implementation structure.</span>
 
 ---
 

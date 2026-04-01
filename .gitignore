@@ -30,9 +30,3 @@ logs/
 *.log
 
 # Course modules in progress (exclude until finalized)
-governed-ai-feature-delivery/module-03-workflow-vs-agent-design/
-governed-ai-feature-delivery/module-04-security-and-guardrails/
-governed-ai-feature-delivery/module-05-frontend-ai-ux-patterns/
-governed-ai-feature-delivery/module-06-evaluation-and-quality-assurance/
-governed-ai-feature-delivery/module-07-deployment-and-governance/
-governed-ai-feature-delivery/module-08-final-build-and-review/
