@@ -82,7 +82,7 @@ Teams overuse agents where deterministic workflows would be safer.
 4. <span class="fragment">Can quality be evaluated repeatably?</span>
 5. <span class="fragment">What is the blast radius if tool calls go wrong?</span>
 
-<span class="fragment">Answer these before implementation — not after.</span>
+<span class="fragment">Answer these before implementation not after.</span>
 
 ---
 
@@ -126,7 +126,9 @@ Teams overuse agents where deterministic workflows would be safer.
 | Ownership | External or platform-managed | Team-owned with tighter controls |
 | Governance | Explicit boundaries required | Explicit boundaries required |
 
-<span class="fragment">The governance obligation is identical — the ownership model is not.</span>
+---
+
+>The governance obligation is identical, the ownership model is not.
 
 ---
 
@@ -163,7 +165,7 @@ Teams overuse agents where deterministic workflows would be safer.
 ## Migration strategy: workflow first
 
 - <span class="fragment">Start with a deterministic baseline.</span>
-- <span class="fragment">Measure where flexibility is actually needed — use evidence, not assumption.</span>
+- <span class="fragment">Measure where flexibility is actually needed: use evidence, not assumption.</span>
 - <span class="fragment">Introduce bounded tools before moving to autonomy.</span>
 - <span class="fragment">Add agentic behaviour only when evaluation results support it.</span>
 

@@ -20,18 +20,22 @@ Without evaluation, quality discussions become opinion-based.
 ## Why evals matter in teams
 
 - <span class="fragment">They replace opinion with measurable quality signals.</span>
-- <span class="fragment">They make prompt/model changes safer and faster.</span>
+- <span class="fragment">They make prompt and model changes safer and faster to adopt.</span>
 - <span class="fragment">They provide shared release criteria across teams.</span>
 - <span class="fragment">They create audit-ready evidence of quality decisions.</span>
+
+<span class="fragment">Evals are not research infrastructure. They are a delivery discipline.</span>
 
 ---
 
 ## What to evaluate
 
 - <span class="fragment">Correctness and schema compliance</span>
-- <span class="fragment">Safety and refusal behavior</span>
+- <span class="fragment">Safety and refusal behaviour</span>
 - <span class="fragment">Hallucination and grounding checks</span>
 - <span class="fragment">Latency and cost thresholds</span>
+
+<span class="fragment">If it matters for release, it needs a measurable criterion.</span>
 
 ---
 
@@ -39,29 +43,33 @@ Without evaluation, quality discussions become opinion-based.
 
 | Approach | Strength | Limitation |
 | -------- | -------- | ---------- |
-| Manual QA | fast spot-checking | not scalable, inconsistent |
-| Repeatable eval suite | reliable regression detection | requires initial setup |
+| Manual QA | Fast spot-checking | Not scalable, inconsistent coverage |
+| Repeatable eval suite | Reliable regression detection | Requires initial dataset setup |
 
-<span class="fragment">Use both, but never rely on manual QA alone.</span>
+<span class="fragment">Use both. Never rely on manual QA alone for release decisions.</span>
 
 ---
 
 ## Evaluation dimensions
 
 1. <span class="fragment">Correctness: is output factually and functionally right?</span>
-2. <span class="fragment">Format: does output match schema/contract?</span>
-3. <span class="fragment">Safety: does behavior follow policy and refusal rules?</span>
-4. <span class="fragment">Grounding: is response supported by input/evidence?</span>
+2. <span class="fragment">Format: does output match the schema and contract?</span>
+3. <span class="fragment">Safety: does behaviour follow policy and refusal rules?</span>
+4. <span class="fragment">Grounding: is the response supported by input or evidence?</span>
 5. <span class="fragment">Operational: latency, cost, and error-rate targets.</span>
+
+<span class="fragment">A release decision based on one dimension alone is incomplete.</span>
 
 ---
 
 ## Golden datasets
 
-- <span class="fragment">Curated input/output cases tied to real workflows.</span>
-- <span class="fragment">Include both "happy path" and failure edge cases.</span>
-- <span class="fragment">Version dataset alongside prompt/model changes.</span>
-- <span class="fragment">Keep cases small but representative to start.</span>
+- <span class="fragment">Curated input and output cases tied to real workflows.</span>
+- <span class="fragment">Include both happy-path cases and failure edge cases.</span>
+- <span class="fragment">Version the dataset alongside prompt and model changes.</span>
+- <span class="fragment">Start small and representative rather than large and shallow.</span>
+
+<span class="fragment">Ten meaningful cases beat one hundred vague ones.</span>
 
 ---
 
@@ -69,55 +77,59 @@ Without evaluation, quality discussions become opinion-based.
 
 - <span class="fragment">Define machine-checkable expectations where possible.</span>
 - <span class="fragment">Separate hard failures from soft quality thresholds.</span>
-- <span class="fragment">Use explicit tolerances for numeric/format variance.</span>
-- <span class="fragment">Map each criterion to release risk.</span>
+- <span class="fragment">Use explicit tolerances for numeric and format variance.</span>
+- <span class="fragment">Map each criterion to release risk, not just technical correctness.</span>
 
 ---
 
-## Example eval case (extraction)
+## Example eval case: extraction
 
 | Field | Expected | Rule |
 | ----- | -------- | ---- |
-| `documentType` | `invoice` | exact match |
-| `confidence` | `0..1` | must be valid range |
-| `entities` | includes amount + invoice_number | required keys present |
-| refusal behavior | `needs_review` on low confidence | policy-compliant fallback |
+| `documentType` | `invoice` | Exact match required |
+| `confidence` | `0..1` | Must be within valid range |
+| `entities` | Includes amount and invoice_number | Required keys must be present |
+| Refusal behaviour | `needs_review` on low confidence | Policy-compliant fallback required |
+
+<span class="fragment">Each rule maps directly to a release risk. If this case fails, the feature should not ship.</span>
 
 ---
 
-## Prompt/model comparison workflow
+## Prompt and model comparison workflow
 
-- <span class="fragment">Run same dataset across variants.</span>
-- <span class="fragment">Compare accuracy, safety, latency, and cost.</span>
-- <span class="fragment">Promote only if quality improves or remains acceptable.</span>
-- <span class="fragment">Record rationale for chosen variant.</span>
+- <span class="fragment">Run the same dataset across all variants being compared.</span>
+- <span class="fragment">Compare accuracy, safety, latency, and cost together.</span>
+- <span class="fragment">Promote a variant only if quality improves or remains within acceptable bounds.</span>
+- <span class="fragment">Record the rationale for the chosen variant as part of the release record.</span>
 
 ---
 
 ## Trace-driven debugging
 
-- <span class="fragment">Inspect failed eval traces for exact failure stage.</span>
-- <span class="fragment">Distinguish prompt issue vs parsing issue vs policy gate issue.</span>
-- <span class="fragment">Turn recurring failures into permanent test cases.</span>
-- <span class="fragment">Use traces to explain release decisions clearly.</span>
+- <span class="fragment">Inspect failed eval traces to find the exact failure stage.</span>
+- <span class="fragment">Distinguish prompt issues from parsing issues from policy gate failures.</span>
+- <span class="fragment">Turn recurring failures into permanent test cases in the golden dataset.</span>
+- <span class="fragment">Use traces to explain release decisions clearly to stakeholders and auditors.</span>
 
 ---
 
 ## Lightweight eval architecture
 
-- <span class="fragment">Dataset file(s) + runner + scorer + report output.</span>
-- <span class="fragment">Start local, then integrate into CI.</span>
-- <span class="fragment">Keep framework simple enough for team ownership.</span>
-- <span class="fragment">Avoid overengineering before baseline is stable.</span>
+- <span class="fragment">Dataset files, a runner, a scorer, and a report output.</span>
+- <span class="fragment">Start local, then integrate into CI as a release gate.</span>
+- <span class="fragment">Keep the framework simple enough for the product team to own and extend.</span>
+- <span class="fragment">Do not over-engineer before the baseline is stable.</span>
+
+<span class="fragment">A simple eval that runs consistently is more valuable than a sophisticated one that does not.</span>
 
 ---
 
 ## Common eval anti-patterns
 
-- <span class="fragment">Only measuring one metric (for example accuracy).</span>
-- <span class="fragment">No safety/refusal checks in eval suite.</span>
-- <span class="fragment">Dataset drift without version tracking.</span>
-- <span class="fragment">Ignoring latency/cost impact of quality improvements.</span>
+- <span class="fragment">Measuring only one dimension, such as accuracy alone.</span>
+- <span class="fragment">No safety or refusal checks in the eval suite.</span>
+- <span class="fragment">Dataset drift without version tracking alongside prompts and models.</span>
+- <span class="fragment">Ignoring latency and cost impact when comparing quality improvements.</span>
 
 ---
 
@@ -125,28 +137,40 @@ Without evaluation, quality discussions become opinion-based.
 
 You will create a lightweight eval suite with:
 
-- <span class="fragment">Golden dataset inputs</span>
-- <span class="fragment">Expected outputs and pass/fail rules</span>
-- <span class="fragment">Prompt/model comparison run</span>
-- <span class="fragment">Trace inspection for failed cases</span>
-- <span class="fragment">Release recommendation summary</span>
+- <span class="fragment">A golden dataset of inputs with expected outputs</span>
+- <span class="fragment">Machine-checkable pass/fail rules per case</span>
+- <span class="fragment">A prompt or model comparison run on the same dataset</span>
+- <span class="fragment">Trace inspection notes for any failed cases</span>
+- <span class="fragment">A release recommendation with written rationale</span>
+
+<span class="fragment">Definition of done: the suite runs without manual intervention and produces a clear pass or fail result per case.</span>
 
 ---
 
 ## Summary
 
-1. <span class="fragment">**If it matters, evaluate it** with repeatable criteria.</span>
-2. <span class="fragment">**Golden datasets** anchor quality over time.</span>
-3. <span class="fragment">**Traces + evals together** improve debugging and governance.</span>
-4. <span class="fragment">**Release confidence** comes from measurable evidence.</span>
+1. <span class="fragment">**If it matters, evaluate it** with repeatable, machine-checkable criteria.</span>
+2. <span class="fragment">**Golden datasets** anchor quality across prompt and model changes over time.</span>
+3. <span class="fragment">**Traces and evals together** improve debugging speed and governance evidence.</span>
+4. <span class="fragment">**Release confidence** comes from measurable evidence, not manual review alone.</span>
 
 ---
 
 ## Bridge to Module 7
 
-- <span class="fragment">Evaluation informs deployment decisions.</span>
-- <span class="fragment">Next: ship with governance and observability controls.</span>
+**What we have now:**
+
+- <span class="fragment">A repeatable eval suite that produces evidence-based release recommendations.</span>
+
+**What is next:**
+
+- <span class="fragment">Evaluation results need to gate deployment, not just inform it.</span>
+- <span class="fragment">Your first task in Module 7: define which eval criteria become hard CI gates before a release can proceed.</span>
+
+<span class="fragment">Module 7 covers deployment, observability, and governance: shipping AI features safely and maintaining control after release.</span>
 
 ---
 
 # Questions?
+
+*Module 6 — Governed AI Feature Delivery*
