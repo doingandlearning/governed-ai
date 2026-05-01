@@ -1,6 +1,8 @@
-import { createDocumentController } from "./controllers/documentController";
-import { createMockLlmGateway } from "./gateway/llmGateway";
-import { createMastraManagedGateway } from "./gateway/mastraManagedGateway";
+import {
+  createDocumentController,
+  createMastraManagedGateway,
+  createMockLlmGateway,
+} from "./features/document-extraction";
 import { createMastraRuntime } from "./mastra/runtime";
 
 async function main() {

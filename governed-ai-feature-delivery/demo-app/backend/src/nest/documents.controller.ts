@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
-import { createDocumentController } from "../controllers/documentController";
-import type { ExtractRequest } from "../types";
+import { createDocumentController, type ExtractRequest } from "../features/document-extraction";
 import { createGatewayForRuntime } from "./gatewayRuntime";
 
 const documentController = createDocumentController({

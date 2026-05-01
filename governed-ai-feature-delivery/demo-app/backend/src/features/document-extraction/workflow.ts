@@ -1,11 +1,7 @@
-import {
-  buildDocumentExtractionPrompt,
-  DOCUMENT_EXTRACTION_PROMPT_VERSION,
-} from "../prompts/documentExtractionPrompt";
-import type { LlmGateway } from "../gateway/llmGateway";
-import type { ExtractRequest, WorkflowResponse } from "../types";
-import { validatePreCall } from "../validators/preCallValidator";
-import { validatePostCall } from "../validators/postCallValidator";
+import { buildDocumentExtractionPrompt, DOCUMENT_EXTRACTION_PROMPT_VERSION } from "./prompt";
+import type { LlmGateway } from "./gateway";
+import type { ExtractRequest, WorkflowResponse } from "./types";
+import { validatePostCall, validatePreCall } from "./validators";
 
 type WorkflowDeps = {
   gateway: LlmGateway;

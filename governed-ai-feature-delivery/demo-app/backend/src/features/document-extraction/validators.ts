@@ -1,6 +1,24 @@
-import type { ExtractedDocument, PostValidationResult } from "../types";
+import type {
+  ExtractRequest,
+  ExtractedDocument,
+  PostValidationResult,
+  PreValidationResult,
+} from "./types";
 
 const ALLOWED_TYPES = new Set(["invoice", "contract", "email", "other"]);
+
+export function validatePreCall(input: ExtractRequest): PreValidationResult {
+  if (!input.text || typeof input.text !== "string") {
+    return { ok: false, reason: "invalid_input" };
+  }
+
+  const trimmed = input.text.trim();
+  if (trimmed.length < 20 || trimmed.length > 10000) {
+    return { ok: false, reason: "invalid_input" };
+  }
+
+  return { ok: true };
+}
 
 export function validatePostCall(candidate: unknown): PostValidationResult {
   if (!candidate || typeof candidate !== "object") {

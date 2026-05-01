@@ -1,5 +1,8 @@
-import { createMockLlmGateway, createOpenAiLlmGateway } from "../gateway/llmGateway";
-import { createMastraManagedGateway } from "../gateway/mastraManagedGateway";
+import {
+  createMastraManagedGateway,
+  createMockLlmGateway,
+  createOpenAiLlmGateway,
+} from "../features/document-extraction";
 import { createMastraRuntime } from "../mastra/runtime";
 
 export function createGatewayForRuntime() {

@@ -1,6 +1,6 @@
-import type { ExtractRequest, WorkflowResponse } from "../types";
-import { createDocumentExtractionWorkflow } from "../workflows/documentExtractionWorkflow";
-import type { LlmGateway } from "../gateway/llmGateway";
+import type { ExtractRequest, WorkflowResponse } from "./types";
+import { createDocumentExtractionWorkflow } from "./workflow";
+import type { LlmGateway } from "./gateway";
 
 type ControllerDeps = {
   gateway: LlmGateway;

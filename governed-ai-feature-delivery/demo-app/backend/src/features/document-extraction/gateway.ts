@@ -1,20 +1,18 @@
-type GatewayInvokeInput = {
+export type GatewayInvokeInput = {
   traceId: string;
   promptVersion: string;
   modelIdentifier: string;
   prompt: string;
 };
 
-type GatewayInvokeResult = {
+export type GatewayInvokeResult = {
   modelIdentifier: string;
   rawOutput: unknown;
 };
 
-type LlmGateway = {
+export type LlmGateway = {
   invoke: (input: GatewayInvokeInput) => Promise<GatewayInvokeResult>;
 };
-
-export type { GatewayInvokeInput, GatewayInvokeResult, LlmGateway };
 
 // Training-safe mock gateway for deterministic workshop behavior.
 export function createMockLlmGateway(): LlmGateway {

@@ -1,5 +1,5 @@
 import type { Mastra } from "@mastra/core";
-import type { GatewayInvokeInput, GatewayInvokeResult, LlmGateway } from "./llmGateway";
+import type { GatewayInvokeInput, GatewayInvokeResult, LlmGateway } from "./gateway";
 
 // Adapter that allows this training app to run behind a Mastra runtime.
 // For now, it delegates model invocation to an underlying gateway while

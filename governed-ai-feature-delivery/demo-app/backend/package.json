@@ -8,11 +8,16 @@
     "start": "node --env-file=.env dist/index.js",
     "dev": "node --env-file=.env --require ts-node/register src/index.ts",
     "start:nest": "node --env-file=.env dist/main.nest.js",
-    "dev:nest": "node --env-file=.env --require ts-node/register src/main.nest.ts"
+    "dev:nest": "node --env-file=.env --require ts-node/register src/main.nest.ts",
+    "test": "vitest run",
+    "test:dev": "vitest",
+    "test:watch": "vitest --watch"
   },
   "devDependencies": {
+    "@types/node": "^24.9.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "vitest": "^4.0.0"
   },
   "dependencies": {
     "@mastra/core": "^1.17.0",
