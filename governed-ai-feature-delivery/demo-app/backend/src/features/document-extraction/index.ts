@@ -13,12 +13,18 @@ export {
 } from "./prompt";
 export { createDocumentExtractionWorkflow } from "./workflow";
 export { validatePostCall, validatePreCall } from "./validators";
+export { getReviewActions, recordReviewAction } from "./reviewActions";
+export { runBoundedToolPath } from "./tools";
 export type {
   ExtractRequest,
   ExtractedDocument,
   PostValidationResult,
   PreValidationResult,
   WorkflowAcceptedResponse,
+  WorkflowDeniedResponse,
   WorkflowFallbackResponse,
   WorkflowResponse,
+  ReviewAction,
+  ReviewActionRequest,
+  ReviewDecisionEvent,
 } from "./types";

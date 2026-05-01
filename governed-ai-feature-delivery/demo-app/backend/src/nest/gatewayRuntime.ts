@@ -4,20 +4,23 @@ import {
   createOpenAiLlmGateway,
 } from "../features/document-extraction";
 import { createMastraRuntime } from "../mastra/runtime";
+import { getRuntimeProfileConfig } from "../config/runtimeProfile";
 
 export function createGatewayForRuntime() {
-  const useMastraRuntime = process.env.USE_MASTRA_RUNTIME === "true";
-  const llmMode = process.env.LLM_MODE ?? "mock";
+  const config = getRuntimeProfileConfig();
 
   const baseGateway =
-    llmMode === "openai"
+    config.llmMode === "openai"
       ? createOpenAiLlmGateway({
           apiKey: requireEnv("OPENAI_API_KEY"),
-          baseUrl: process.env.OPENAI_BASE_URL,
+          baseUrl: config.openAiBaseUrl,
+          debugLogging: config.debugLlmLogs,
         })
-      : createMockLlmGateway();
+      : createMockLlmGateway({ debugLogging: config.debugLlmLogs });
 
-  return useMastraRuntime ? createMastraManagedGateway(createMastraRuntime(), baseGateway) : baseGateway;
+  return config.useMastraRuntime
+    ? createMastraManagedGateway(createMastraRuntime(), baseGateway)
+    : baseGateway;
 }
 
 function requireEnv(name: string): string {

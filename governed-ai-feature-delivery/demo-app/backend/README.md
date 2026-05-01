@@ -53,22 +53,40 @@ or fallback:
 }
 ```
 
+## Runtime profiles
+
+Set `APP_PROFILE` to choose defaults:
+
+| Profile | LLM mode default | Mastra runtime default | Model identifier default | Confidence threshold default |
+| --- | --- | --- | --- |
+| `dev` | `mock` | `false` | `gpt-4o-mini` | `0.8` |
+| `stage` | `mock` | `true` | `gpt-4o-mini` | `0.85` |
+| `prod` | `openai` | `true` | `gpt-4o-mini` | `0.9` |
+
+Optional explicit overrides (for demos/troubleshooting):
+- `LLM_MODE=mock|openai`
+- `USE_MASTRA_RUNTIME=true|false`
+- `MODEL_IDENTIFIER=<model-name>`
+- `CONFIDENCE_THRESHOLD=<0..1>`
+- `DEBUG_LLM_LOGS=true|false`
+- `OPENAI_BASE_URL=<proxy-or-provider-url>`
+
 ## Notes
 
 - This is intentionally lightweight for training use.
-- Default gateway mode is mock for predictable demos.
-- Set `USE_MASTRA_RUNTIME=true` to run with the Mastra runtime adapter.
+- Default local profile is `dev`, which uses deterministic mock behavior.
+- `stage` and `prod` defaults make Mastra runtime behavior explicit.
 - The Mastra adapter currently delegates to the same gateway logic; this is the extension point to plug in real Mastra workflows/agents/tools.
 
-## LLM modes
+## LLM modes and profiles
 
-- `LLM_MODE=mock` (default): deterministic local demo behavior.
+- `LLM_MODE=mock`: deterministic local demo behavior.
 - `LLM_MODE=openai`: real LLM call through OpenAI Chat Completions API.
 
 Required for OpenAI mode:
 
 ```bash
-export LLM_MODE=openai
+export APP_PROFILE=prod
 export OPENAI_API_KEY=your_key_here
 # Optional for gateway/proxy setups:
 # export OPENAI_BASE_URL=https://your-proxy/v1
@@ -85,6 +103,20 @@ Dev mode:
 
 ```bash
 npm run dev:nest
+```
+
+`npm run dev` is aliased to the same Nest server startup for convenience.
+
+Stage-like mode (Mastra enabled, mock gateway):
+
+```bash
+APP_PROFILE=stage npm run dev:nest
+```
+
+Prod-like mode (Mastra + OpenAI defaults):
+
+```bash
+APP_PROFILE=prod OPENAI_API_KEY=your_key_here npm run dev:nest
 ```
 
 Run with real OpenAI:
@@ -109,3 +141,46 @@ curl -X POST http://localhost:3000/documents/extract \
     "source": "upload"
   }'
 ```
+
+## Evaluation harness (Module 06)
+
+Starter eval dataset:
+- `evals/document-extraction.dataset.json`
+
+Run the eval suite:
+
+```bash
+npm run eval:document-extraction
+```
+
+Output artifact:
+- `evals/artifacts/document-extraction-summary.json`
+
+The command exits non-zero if any eval case fails.
+
+Generate release gate report (quality + policy + trace checks):
+
+```bash
+npm run release-gate
+```
+
+Release artifacts:
+- `evals/artifacts/release-gate-report.md` (human-readable)
+- `evals/artifacts/release-gate-report.json` (structured)
+
+Generate version bundle manifest:
+
+```bash
+npm run version-bundle
+```
+
+Version bundle artifacts:
+- `evals/artifacts/version-bundle-manifest.json`
+- `evals/version-bundle-manifest.schema.json`
+
+## Operational safety
+
+See `OPERATIONS.md` for:
+- kill-switch operation (`FEATURE_DOCUMENT_EXTRACTION_ENABLED`)
+- rollback steps for model/threshold config
+- a 5-minute demo script (`npm run ops:demo-safety`)
