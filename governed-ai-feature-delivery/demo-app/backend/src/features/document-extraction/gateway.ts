@@ -82,6 +82,12 @@ type OpenAiGatewayConfig = {
   debugLogging?: boolean;
 };
 
+type TokenUsage = {
+  promptTokens?: number;
+  completionTokens?: number;
+  totalTokens?: number;
+};
+
 export function createOpenAiLlmGateway(config: OpenAiGatewayConfig): LlmGateway {
   const baseUrl =
     typeof config.baseUrl === "string" && config.baseUrl.trim().length > 0
@@ -151,7 +157,13 @@ export function createOpenAiLlmGateway(config: OpenAiGatewayConfig): LlmGateway 
 
       const responsePayload = (await response.json()) as {
         choices?: Array<{ message?: { content?: string } }>;
+        usage?: {
+          prompt_tokens?: number;
+          completion_tokens?: number;
+          total_tokens?: number;
+        };
       };
+      const tokenUsage = extractTokenUsage(responsePayload.usage);
 
       const content = responsePayload.choices?.[0]?.message?.content ?? "{}";
 
@@ -170,6 +182,7 @@ export function createOpenAiLlmGateway(config: OpenAiGatewayConfig): LlmGateway 
             mode: "openai",
             messageContent: content,
             rawOutput: result.rawOutput,
+            tokenUsage,
           },
         });
       }
@@ -179,7 +192,7 @@ export function createOpenAiLlmGateway(config: OpenAiGatewayConfig): LlmGateway 
         traceId: input.traceId,
         promptVersion: input.promptVersion,
         modelIdentifier: input.modelIdentifier,
-        details: { mode: "openai", hasOutput: true },
+        details: { mode: "openai", hasOutput: true, tokenUsage },
       });
       return result;
     },
@@ -192,4 +205,17 @@ function safeJsonParse(text: string): unknown {
   } catch {
     return {};
   }
+}
+
+function extractTokenUsage(usage: {
+  prompt_tokens?: number;
+  completion_tokens?: number;
+  total_tokens?: number;
+} | undefined): TokenUsage {
+  if (!usage) return {};
+  return {
+    promptTokens: usage.prompt_tokens,
+    completionTokens: usage.completion_tokens,
+    totalTokens: usage.total_tokens,
+  };
 }

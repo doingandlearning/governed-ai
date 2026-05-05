@@ -1,0 +1,402 @@
+
+<style>
+
+:root {
+  /* Backgrounds */
+  --color-background-primary:   #ffffff;
+  --color-background-secondary: #f1efe8;
+  --color-background-tertiary:  #e8e6de;
+  --color-background-info:      #e6f1fb;
+  --color-background-success:   #eaf3de;
+  --color-background-warning:   #faeeda;
+  --color-background-danger:    #fcebeb;
+
+  /* Text */
+  --color-text-primary:   #2c2c2a;
+  --color-text-secondary: #5f5e5a;
+  --color-text-tertiary:  #888780;
+  --color-text-info:      #185fa5;
+  --color-text-success:   #3b6d11;
+  --color-text-warning:   #ba7517;
+  --color-text-danger:    #a32d2d;
+
+  /* Borders */
+  --color-border-tertiary:  rgba(44, 44, 42, 0.15);
+  --color-border-secondary: rgba(44, 44, 42, 0.30);
+  --color-border-primary:   rgba(44, 44, 42, 0.40);
+  --color-border-info:      rgba(24, 95, 165, 0.50);
+  --color-border-success:   rgba(59, 109, 17, 0.50);
+  --color-border-warning:   rgba(186, 117, 23, 0.50);
+  --color-border-danger:    rgba(163, 45, 45, 0.50);
+
+  /* Typography */
+  --font-sans:  system-ui, -apple-system, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono:  ui-monospace, "Cascadia Code", "Fira Mono", monospace;
+
+  /* Layout */
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Backgrounds */
+    --color-background-primary:   #3a3a37;  /* card surface — was #2c2c2a */
+    --color-background-secondary: #444441;  /* elevated surface — was #3a3a37 */
+    --color-background-tertiary:  #1e1e1c;  /* page bg — was #1e1e1c, keep */
+
+    --color-background-info:      #042c53;
+    --color-background-success:   #173404;
+    --color-background-warning:   #412402;
+    --color-background-danger:    #501313;
+
+    /* Text */
+    --color-text-primary:   #f1efe8;
+    --color-text-secondary: #b4b2a9;
+    --color-text-tertiary:  #888780;
+    --color-text-info:      #85b7eb;
+    --color-text-success:   #97c459;
+    --color-text-warning:   #ef9f27;
+    --color-text-danger:    #f09595;
+
+    /* Borders */
+    --color-border-tertiary:  rgba(241, 239, 232, 0.15);
+    --color-border-secondary: rgba(241, 239, 232, 0.30);
+    --color-border-primary:   rgba(241, 239, 232, 0.40);
+    --color-border-info:      rgba(133, 183, 235, 0.50);
+    --color-border-success:   rgba(151, 196, 89, 0.50);
+    --color-border-warning:   rgba(239, 159, 39, 0.50);
+    --color-border-danger:    rgba(240, 149, 149, 0.50);
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body {
+  background: var(--color-background-tertiary);
+  color: var(--color-text-primary);
+  margin: 8px;
+}
+
+button {
+  padding: 6px 14px;
+  font-size: 13px;
+  font-family: var(--font-sans);
+  color: var(--color-text-secondary);
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background .15s;
+}
+
+button:hover {
+  background: var(--color-background-secondary);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+.root{padding:1.5rem 0;font-family:var(--font-sans)}
+.tabs{display:flex;gap:6px;margin-bottom:1.5rem;flex-wrap:wrap}
+.tab{padding:6px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);transition:all .15s}
+.tab.active{background:var(--color-background-secondary);color:var(--color-text-primary);border-color:var(--color-border-primary);font-weight:500}
+.panel{display:none}.panel.active{display:block}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem}
+.card-label{font-size:11px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--color-text-tertiary);margin-bottom:6px}
+.card-title{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px}
+.card-body{font-size:13px;color:var(--color-text-secondary);line-height:1.6}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;margin-right:4px;margin-bottom:4px}
+.b-amber{background:var(--color-background-warning);color:var(--color-text-warning)}
+.b-red{background:var(--color-background-danger);color:var(--color-text-danger)}
+.b-green{background:var(--color-background-success);color:var(--color-text-success)}
+.b-blue{background:var(--color-background-info);color:var(--color-text-info)}
+.b-gray{background:var(--color-background-secondary);color:var(--color-text-secondary)}
+.code{font-family:var(--font-mono);font-size:12px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:4px;padding:2px 6px;color:var(--color-text-primary)}
+.demo-field{display:flex;align-items:center;gap:10px;padding:10px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);margin-bottom:8px;cursor:pointer;transition:border-color .15s}
+.demo-field:hover{border-color:var(--color-border-secondary)}
+.demo-field.uncertain{border-color:#BA7517;border-width:1px}
+.demo-field.blocked{border-color:#A32D2D;border-width:1px}
+.demo-field.missing{border-color:var(--color-border-secondary)}
+.field-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-green{background:#639922}.dot-amber{background:#BA7517}.dot-red{background:#A32D2D}.dot-gray{background:#888780}
+.field-label{font-size:12px;color:var(--color-text-secondary);min-width:90px}
+.field-val{font-size:13px;color:var(--color-text-primary);flex:1}
+.field-badge{font-size:11px;padding:2px 6px;border-radius:3px;font-weight:500}
+.streaming-demo{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-top:12px}
+.stream-bar{height:3px;border-radius:2px;background:var(--color-background-secondary);overflow:hidden;margin-bottom:12px}
+.stream-fill{height:100%;border-radius:2px;background:var(--color-text-info);width:0%;transition:width .3s}
+.skel{height:12px;border-radius:3px;background:var(--color-background-secondary);margin-bottom:8px}
+.state-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;border:0.5px solid}
+.sp-idle{color:var(--color-text-tertiary);border-color:var(--color-border-tertiary);background:var(--color-background-secondary)}
+.sp-queued{color:#BA7517;border-color:#BA7517;background:#FAEEDA}
+.sp-streaming{color:#185FA5;border-color:#185FA5;background:#E6F1FB}
+.sp-complete{color:#3B6D11;border-color:#3B6D11;background:#EAF3DE}
+.sp-error{color:#A32D2D;border-color:#A32D2D;background:#FCEBEB}
+.sp-blocked{color:#533AB7;border-color:#533AB7;background:#EEEDFE}
+.state-machine{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px}
+.arrow-sep{color:var(--color-text-tertiary);font-size:12px}
+.do-list{list-style:none;padding:0}
+.do-list li{font-size:13px;color:var(--color-text-secondary);line-height:1.6;padding:3px 0;padding-left:14px;position:relative}
+.do-list li::before{content:"—";position:absolute;left:0;color:var(--color-text-tertiary)}
+.do-list.dont li::before{content:"✗";color:var(--color-text-danger)}
+.section-head{font-size:13px;font-weight:500;color:var(--color-text-primary);margin:12px 0 6px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:500px){.two-col{grid-template-columns:1fr}}
+.error-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.error-row:last-child{border-bottom:none}
+.error-type{font-size:12px;font-weight:500;min-width:110px;color:var(--color-text-primary)}
+.error-desc{font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+</style>
+
+<div class="root">
+<div class="tabs">
+  <div class="tab active" onclick="show('states')">State model</div>
+  <div class="tab" onclick="show('streaming')">Streaming</div>
+  <div class="tab" onclick="show('fields')">Field display</div>
+  <div class="tab" onclick="show('errors')">Error taxonomy</div>
+  <div class="tab" onclick="show('dos')">Do / avoid</div>
+</div>
+
+<div id="states" class="panel active">
+  <div class="state-machine">
+    <span class="state-pill sp-idle">idle</span>
+    <span class="arrow-sep">→</span>
+    <span class="state-pill sp-queued">queued</span>
+    <span class="arrow-sep">→</span>
+    <span class="state-pill sp-streaming">streaming</span>
+    <span class="arrow-sep">→</span>
+    <span class="state-pill sp-streaming">partial</span>
+    <span class="arrow-sep">→</span>
+    <span class="state-pill sp-complete">complete</span>
+  </div>
+  <div class="state-machine" style="margin-top:6px">
+    <span style="font-size:12px;color:var(--color-text-tertiary)">also from streaming:</span>
+    <span class="state-pill sp-error">error</span>
+    <span class="state-pill sp-error">timeout</span>
+    <span class="state-pill sp-blocked">policy_blocked</span>
+    <span class="state-pill sp-queued">needs_review</span>
+  </div>
+  <div style="height:16px"></div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-label">idle / queued</div>
+      <div class="card-title">Before the request</div>
+      <div class="card-body">Show your output skeleton — mirroring the actual field layout, not a generic spinner. Queued means the server has the request but hasn't started generating. Surface this if latency will be noticeable (>1s).</div>
+    </div>
+    <div class="card">
+      <div class="card-label">streaming / partial</div>
+      <div class="card-title">Tokens arriving</div>
+      <div class="card-body">Render tokens as they arrive with no layout shift. Use <span class="code">min-height</span> reservation. Never attach status badges, confidence labels, or commit actions to partial output. The stream is not the result.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">complete</div>
+      <div class="card-title">Stream closed cleanly</div>
+      <div class="card-body">Transition field statuses from skeleton to real. Enable the review step. Surface confidence bands and evidence. The confirmation gesture and audit write happen here — not before.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">needs_review</div>
+      <div class="card-title">Backend flagged for human check</div>
+      <div class="card-body">This is a defined state, not an error. Render it differently: highlight the uncertain fields, surface a "review required" header, require explicit sign-off before commit. Never silently treat this as complete.</div>
+    </div>
+  </div>
+</div>
+
+<div id="streaming" class="panel">
+  <div class="cards">
+    <div class="card">
+      <div class="card-label">SSE setup</div>
+      <div class="card-title">Use ReadableStream + TextDecoder</div>
+      <div class="card-body" style="margin-bottom:8px">Avoid raw string concatenation on the response body. Use <span class="code">getReader()</span> on the response body, decode with <span class="code">TextDecoder</span>, and parse SSE <span class="code">data:</span> lines explicitly. Handle <span class="code">[DONE]</span> as a first-class event.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Layout stability</div>
+      <div class="card-title">Reserve space before tokens arrive</div>
+      <div class="card-body">Set a <span class="code">min-height</span> on the output container that matches your expected output height. Otherwise each token causes a reflow. For structured field output, render all field rows immediately in skeleton state, then populate values as they stream in.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Interruption</div>
+      <div class="card-title">Define the broken stream state</div>
+      <div class="card-body">A stream that stops mid-output is not complete. Store the partial result separately from the final result. Offer a retry. Never display partial output with final-output styling or make it commitable.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Progress signalling</div>
+      <div class="card-title">Show deterministic stages, not a spinner</div>
+      <div class="card-body">Users tolerate waiting better when they can see progress. Use stage labels (queued → extracting → reviewing → done) rather than an indeterminate spinner. Tie labels to actual backend events from your SSE stream where possible.</div>
+    </div>
+  </div>
+  <div class="streaming-demo">
+    <div class="card-label" style="margin-bottom:8px">Simulated stream demo</div>
+    <div id="stream-state" class="state-pill sp-idle" style="margin-bottom:10px">idle</div>
+    <div class="stream-bar"><div class="stream-fill" id="stream-fill"></div></div>
+    <div id="stream-fields">
+      <div class="skel" style="width:60%"></div>
+      <div class="skel" style="width:80%"></div>
+      <div class="skel" style="width:45%"></div>
+    </div>
+    <button onclick="runStreamDemo()" style="margin-top:10px;font-size:13px">Run stream demo</button>
+  </div>
+</div>
+
+<div id="fields" class="panel">
+  <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px">Click a field to see what each status communicates. Structured field cards — not paragraphs — let reviewers scan and act on uncertain results.</p>
+  <div id="field-demo">
+    <div class="demo-field" onclick="showFieldDetail('accepted')">
+      <div class="field-dot dot-green"></div>
+      <span class="field-label">Claim amount</span>
+      <span class="field-val">£4,250.00</span>
+      <span class="field-badge b-green">accepted</span>
+    </div>
+    <div class="demo-field uncertain" onclick="showFieldDetail('uncertain')">
+      <div class="field-dot dot-amber"></div>
+      <span class="field-label">Policy number</span>
+      <span class="field-val">POL-2024-??8</span>
+      <span class="field-badge b-amber">uncertain</span>
+    </div>
+    <div class="demo-field blocked" onclick="showFieldDetail('blocked')">
+      <div class="field-dot dot-red"></div>
+      <span class="field-label">NI number</span>
+      <span class="field-val">•••••••••</span>
+      <span class="field-badge b-red">policy_blocked</span>
+    </div>
+    <div class="demo-field missing" onclick="showFieldDetail('missing')">
+      <div class="field-dot dot-gray"></div>
+      <span class="field-label">Date of loss</span>
+      <span class="field-val" style="color:var(--color-text-tertiary)">not found</span>
+      <span class="field-badge b-gray">missing</span>
+    </div>
+  </div>
+  <div id="field-detail" class="card" style="display:none;margin-top:12px;border-color:var(--color-border-secondary)"></div>
+</div>
+
+<div id="errors" class="panel">
+  <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px">Each error type has a different recovery action. Generic error messages hide which recovery is appropriate.</p>
+  <div class="card">
+    <div class="error-row">
+      <span class="error-type"><span class="badge b-red">network</span></span>
+      <span class="error-desc">Request never reached the server or timed out in transit. Recovery: automatic retry with exponential backoff, then "Try again" CTA. Preserve the input — don't clear the form.</span>
+    </div>
+    <div class="error-row">
+      <span class="error-type"><span class="badge b-red">model_error</span></span>
+      <span class="error-desc">Server returned an error from the model or backend pipeline. Surface the <span class="code">error_type</span> from your API contract. Recovery action depends on type — don't collapse all model errors to one message.</span>
+    </div>
+    <div class="error-row">
+      <span class="error-type"><span class="badge b-amber">timeout</span></span>
+      <span class="error-desc">Stream started but didn't complete in the expected window. Distinguish from network failure — the partial output may be useful. Offer retry with reduced scope (fewer fields, shorter input) as a secondary action.</span>
+    </div>
+    <div class="error-row">
+      <span class="error-type"><span class="badge b-blue">policy_blocked</span></span>
+      <span class="error-desc">Not an error — a policy decision. Render with a distinct colour (purple / info, not red). Explain what was blocked and why at field level, not just page level. The CTA is "request review" not "retry".</span>
+    </div>
+    <div class="error-row">
+      <span class="error-type"><span class="badge b-amber">partial_failure</span></span>
+      <span class="error-desc">Some fields succeeded, one or more failed. Never show a single error state for the whole form — show per-field status. The user can still review and commit the fields that did succeed, with the failed ones flagged.</span>
+    </div>
+    <div class="error-row">
+      <span class="error-type"><span class="badge b-gray">stream_interrupted</span></span>
+      <span class="error-desc">SSE connection closed before <span class="code">[DONE]</span>. Store partial as a separate state. Show "Incomplete result — retry?" rather than discarding or presenting as final.</span>
+    </div>
+  </div>
+</div>
+
+<div id="dos" class="panel">
+  <div class="two-col">
+    <div>
+      <div class="section-head">Do</div>
+      <ul class="do-list">
+        <li>Define all states before writing any render logic</li>
+        <li>Match your UI state enum to your backend response contract</li>
+        <li>Show field-level status, not page-level confidence</li>
+        <li>Require explicit confirmation before any high-impact commit</li>
+        <li>Reserve layout space before tokens arrive</li>
+        <li>Make uncertain fields visually prominent, not subtle</li>
+        <li>Persist the reviewed state and confirmation gesture for audit</li>
+        <li>Treat <span class="code">needs_review</span> as a first-class state</li>
+        <li>Give each error type its own recovery path</li>
+        <li>Keep display components pure — review wrapper owns edit state</li>
+      </ul>
+    </div>
+    <div>
+      <div class="section-head">Avoid</div>
+      <ul class="do-list dont">
+        <li>One-click commit on unreviewed model output</li>
+        <li>Generic spinner instead of output skeleton</li>
+        <li>Styling partial output as final</li>
+        <li>A single confidence score with no band definition</li>
+        <li>Hiding uncertainty to make the UI look cleaner</li>
+        <li>Conflating network error and model error in one message</li>
+        <li>UI state enum that diverges from backend response statuses</li>
+        <li>Inconsistent fallback behaviour across screens</li>
+        <li>Layout shift as tokens arrive</li>
+        <li>Exposing internal prompt text or policy internals to users</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+const fieldDetails = {
+  accepted:{title:'Accepted',color:'b-green',body:'High confidence extraction, evidence matched. No reviewer action needed. Optionally show a supporting source snippet inline for auditability.'},
+  uncertain:{title:'Uncertain',color:'b-amber',body:'Model confidence is below threshold, or multiple candidate values exist. Use amber border — not just a badge — so reviewers can find it without reading every row. Require explicit sign-off on this field before commit.'},
+  blocked:{title:'Policy blocked',color:'b-red',body:'Field value must be masked by policy before display. Redaction must be consistent across all components — not per screen. The user should see that a value exists but not the value itself. CTA is "request access" not "retry".'},
+  missing:{title:'Missing',color:'b-gray',body:'Model found no candidate value in the source document. The field should still render — an absent row hides the gap. The reviewer can enter the value manually or flag for escalation.'}
+};
+
+function showFieldDetail(status){
+  const d = fieldDetails[status];
+  const el = document.getElementById('field-detail');
+  el.style.display='block';
+  el.innerHTML=`<div class="card-label">${status}</div><div class="card-title">${d.title} <span class="badge ${d.color}">${status}</span></div><div class="card-body">${d.body}</div>`;
+}
+
+const stages = [
+  {label:'queued',cls:'sp-queued',pct:5},
+  {label:'streaming',cls:'sp-streaming',pct:35},
+  {label:'partial',cls:'sp-streaming',pct:70},
+  {label:'complete',cls:'sp-complete',pct:100}
+];
+
+const fieldLines = [
+  '<div class="demo-field"><div class="field-dot dot-gray"></div><span class="field-label">Claimant name</span><span class="field-val">—</span></div>',
+  '<div class="demo-field"><div class="field-dot dot-gray"></div><span class="field-label">Incident date</span><span class="field-val">—</span></div>',
+  '<div class="demo-field"><div class="field-dot dot-gray"></div><span class="field-label">Amount</span><span class="field-val">—</span></div>'
+];
+const fieldFinal = [
+  '<div class="demo-field"><div class="field-dot dot-green"></div><span class="field-label">Claimant name</span><span class="field-val">Sarah Okafor</span><span class="field-badge b-green">accepted</span></div>',
+  '<div class="demo-field uncertain"><div class="field-dot dot-amber"></div><span class="field-label">Incident date</span><span class="field-val">12 Mar 202?</span><span class="field-badge b-amber">uncertain</span></div>',
+  '<div class="demo-field"><div class="field-dot dot-green"></div><span class="field-label">Amount</span><span class="field-val">£1,840.00</span><span class="field-badge b-green">accepted</span></div>'
+];
+
+let running = false;
+function runStreamDemo(){
+  if(running)return;
+  running=true;
+  const sf = document.getElementById('stream-fill');
+  const ss = document.getElementById('stream-state');
+  const sfields = document.getElementById('stream-fields');
+  sfields.innerHTML = fieldLines.join('');
+  let i=0;
+  function step(){
+    if(i>=stages.length){running=false;return;}
+    const s=stages[i];
+    ss.className='state-pill '+s.cls;
+    ss.textContent=s.label;
+    sf.style.width=s.pct+'%';
+    if(s.label==='partial') sfields.innerHTML = fieldLines.slice(0,2).join('')+fieldFinal[2];
+    if(s.label==='complete') sfields.innerHTML = fieldFinal.join('');
+    i++;
+    setTimeout(step, i===1?600:900);
+  }
+  step();
+}
+</script>

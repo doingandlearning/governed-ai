@@ -10,6 +10,8 @@ You will:
 4. Return deterministic output contracts, including fallback.
 5. Produce a reusable module pattern for future AI features.
 
+This lab is implementation on top of a starter baseline, not greenfield. You must use your Module 1 design brief to justify your control-point and trace decisions.
+
 ---
 
 ## Scenario: Document Extraction Service
@@ -26,16 +28,23 @@ This lab extends the Module 1 lifecycle and governance boundaries into real back
 
 ## Working directory
 
-Use: `governed-ai-feature-delivery/demo-app/backend`
+Use: `governed-ai-feature-delivery/demo-app-starter/backend`
 
 Suggested scaffold files:
-- `src/controllers/documentController.ts`
-- `src/workflows/documentExtractionWorkflow.ts`
-- `src/prompts/documentExtractionPrompt.ts`
-- `src/validators/preCallValidator.ts`
-- `src/validators/postCallValidator.ts`
-- `src/gateway/llmGateway.ts`
-- `src/types.ts`
+- `src/features/document-extraction/controller.ts`
+- `src/features/document-extraction/workflow.ts`
+- `src/features/document-extraction/prompt.ts`
+- `src/features/document-extraction/validators.ts`
+- `src/features/document-extraction/gateway.ts`
+- `src/features/document-extraction/types.ts`
+
+Reference implementation (instructor only): `governed-ai-feature-delivery/demo-app/backend`
+
+### Required input artifact
+Bring your Module 1 design brief. At minimum, include:
+- Outcome-to-control mapping (`accepted`, `needs_review`, `denied` or deferred rationale)
+- Ownership decisions (`workflow` vs `prompt` vs `config` vs infra)
+- Minimum trace contract
 
 ---
 
@@ -48,12 +57,14 @@ Create the basic structure for a governed endpoint.
 - Create a workflow service for orchestration.
 - Create a prompt module with explicit version tag.
 - Add validator stubs for pre-call and post-call checks.
+- Keep all of the above in a single feature slice (`document-extraction`).
 
 **Hints:**
 - Keep controller thin; no model logic in controller.
 - Put sequencing and decisions in workflow service.
 - Represent prompt version as explicit constant/metadata field.
 - Keep return types stable for frontend consumption.
+- This is within-feature layering, not cross-project folder-by-layer architecture.
 
 <details>
 <summary>Possible Solution for Task 1</summary>
@@ -78,6 +89,7 @@ Integrate a gateway adapter for model invocation.
 - Send prompt + variables + metadata via gateway adapter.
 - Include `promptVersion` and `modelIdentifier` in trace envelope.
 - Capture response in workflow service for validation.
+- Show where this matches your Module 1 audit contract.
 
 **Hints:**
 - Keep provider details behind gateway interface.
@@ -110,6 +122,7 @@ Add deterministic acceptance and fallback behavior.
 - Validate post-call output against schema + policy constraints.
 - Return `accepted` when checks pass.
 - Return `needs_review` fallback when checks fail.
+- If you defer `denied` to a later module, explicitly note that in your README notes.
 
 **Hints:**
 - Treat model output as untrusted until validated.
@@ -159,6 +172,7 @@ validation: pre=pass, post=fail
 ## Key Concepts Demonstrated
 
 - **Layered backend design**: clear ownership and reduced coupling.
+- **Feature-sliced locality**: boundaries are clear and co-located by domain feature.
 - **Prompt governance in code**: reviewable and versioned behavior assets.
 - **Validation gates**: deterministic controls around model variability.
 - **Gateway traceability**: consistent provenance for audit and debugging.
@@ -173,15 +187,8 @@ validation: pre=pass, post=fail
 - Prompt version is explicit and propagated to gateway metadata.
 - Post-call validation blocks invalid output from caller response.
 - Endpoint always returns stable response contract (`accepted` or `needs_review`).
-
----
-
-## Facilitator Debrief Prompts
-
-1. Which layer was hardest to keep clean in your implementation?
-2. What metadata became essential once you implemented traceability?
-3. Where did validation reveal hidden assumptions in your prompt design?
-4. What would you extract into a shared module for future features?
+- Implementation lives in the `document-extraction` feature slice.
+- Team can point to where each Module 1 design-brief decision appears in code/config/tests.
 
 ---
 

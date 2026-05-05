@@ -1,6 +1,10 @@
 # Demos — Module 7
 
 This runbook standardizes Module 7 demos so deployment governance is shown as concrete engineering operations.
+It assumes:
+- `demo-app` is the instructor reference implementation.
+- `demo-app-starter/module_7_starter` is the learner baseline.
+- Teams carry forward Module 6 eval outputs and prior guardrail/trace contracts as release evidence inputs.
 
 ---
 
@@ -16,6 +20,7 @@ Show how to convert evaluation and governance requirements into practical CI/CD 
 - Prepare sample change bundle (prompt, model, eval dataset updates).
 - Have gate policy visible (hard vs soft criteria).
 - Prepare one pass and one fail pipeline example.
+- Keep version-bundle and release-gate style artifacts visible for walkthrough.
 
 ### Script (suggested flow)
 1. Show versioned change bundle and metadata.
@@ -23,6 +28,7 @@ Show how to convert evaluation and governance requirements into practical CI/CD 
 3. Demonstrate pass case and go decision.
 4. Demonstrate fail case and blocked release.
 5. Show required evidence attached to release decision.
+6. Clarify which criteria are hard blockers in CI versus manual review requirements.
 
 ### Talk track prompts
 - "Which gate should hard-fail every release?"
@@ -32,6 +38,7 @@ Show how to convert evaluation and governance requirements into practical CI/CD 
 ### Expected audience output
 - Participants can define hard and soft release gates.
 - Participants can tie gate results to go/no-go decisions.
+- Participants can map gate failures to named owners and escalation paths.
 
 ### Common failure modes
 - No explicit thresholds, only qualitative judgment.
@@ -52,6 +59,7 @@ Demonstrate operational response when a release causes degraded behavior in prod
 - Prepare simulated incident: quality regression after release.
 - Have trace sample with prompt/model/version provenance.
 - Prepare rollback and fallback playbook snippets.
+- Prepare kill-switch example path to show immediate containment option.
 
 ### Script (suggested flow)
 1. Detect regression via alert or post-release eval signal.
@@ -59,15 +67,18 @@ Demonstrate operational response when a release causes degraded behavior in prod
 3. Trigger rollback to previous release bundle.
 4. Route in-flight risky requests through fallback path.
 5. Capture incident notes and follow-up control improvement.
+6. Show when kill switch is preferred over rollback (or used first).
 
 ### Talk track prompts
 - "When do we rollback vs keep release and fallback requests?"
 - "Which trace fields are mandatory for fast triage?"
 - "How do we prevent this specific regression next release?"
+- "What condition triggers kill switch without waiting for full incident analysis?"
 
 ### Expected audience output
 - Participants understand rollback vs fallback distinction.
 - Participants can define minimum incident response steps.
+- Participants can explain kill switch role in release governance.
 
 ### Common failure modes
 - Relying on rollback without request-level fallback.

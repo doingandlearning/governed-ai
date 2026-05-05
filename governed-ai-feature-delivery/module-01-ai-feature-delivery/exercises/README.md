@@ -1,178 +1,138 @@
-# Lab 1: Identify AI Risk Boundaries
+# Lab 1: Governed AI Design Decisions (Not a Rebuild)
 
 ## Objective
-In this lab, you'll map a governed AI request flow and identify where controls should exist before any implementation begins. You'll practice trust-boundary mapping, validation placement, and audit-focused logging design.
+This lab intentionally does not ask you to recreate the live demo. Instead, you will use the same scenario to make governance decisions, evaluate trade-offs, and produce evidence standards your team can reuse.
 
 You will:
-1. Map an end-to-end request lifecycle for the module scenario.
-2. Classify trusted vs untrusted inputs and outputs.
-3. Propose validation gates at key control points.
-4. Define minimum logging and trace metadata for auditability.
-5. Produce a reusable boundary checklist for future modules.
+1. Analyze observed runtime outcomes (`accepted`, `needs_review`, `denied`).
+2. Decide where and why interception should happen.
+3. Define a minimum audit/trace contract.
+4. Propose one policy/profile variation and predict impact.
+5. Produce a short governance design brief for Module 2 implementation.
 
 ---
 
 ## Scenario: Document Intake Assistant
 
-You are part of a team building an AI-powered document intake feature for a regulated environment.
+You are shaping standards for an AI-powered document intake feature in a regulated environment.
 
-The feature needs to:
-- Accept document text from a frontend workflow.
-- Extract key structured fields from content.
-- Classify document type for routing.
-- Return output to a UI for review before save.
+The current app already demonstrates:
+- Frontend status updates and transition telemetry.
+- Backend lifecycle logging and traceable decision events.
+- Guardrail-driven routing (`accepted`, `needs_review`, `denied`).
 
-This is similar to real enterprise processing where output quality, auditability, and safe fallback behavior matter as much as functionality.
+Your job in this lab is to decide whether these controls are sufficient and what should change before wider rollout.
 
 ---
 
-## Task 1: Map the Request Lifecycle
+## Working Mode and Timebox
 
-Create a simple lifecycle map from user input to frontend display.
+- Team size: 2-4 people.
+- Time: 35-45 minutes total.
+- Output format: one shared page (doc, whiteboard, or markdown).
+- Constraint: no source-code walkthrough required; focus on behavior and governance logic.
+
+Suggested pacing:
+1. Task 1 (10 min)
+2. Task 2 (10 min)
+3. Task 3 (10 min)
+4. Task 4 (8 min)
+5. Share-out (5-7 min)
+
+---
+
+## Task 1: Outcome-to-Control Mapping
+
+Use the observed outcomes from the demo and map each one to its control point.
 
 **Your task:**
-- Draw a 6-8 step flow from input to output.
-- Label major components (frontend, backend workflow, gateway, model, validator).
-- Identify where policy or business rules are applied.
-- Mark where a trace ID should first be created and propagated.
+- Create a table with rows for `accepted`, `needs_review`, and `denied`.
+- For each row, state:
+  - Which gate produced the decision (pre-call, post-call, confidence routing, etc.).
+  - What evidence should exist in logs/traces.
+  - What the user should see in the UI.
+- Add one "what could go wrong" note per row.
 
-**Hints:**
-- Start from the lifecycle slide in Module 1.
-- Treat "model call" as one step, not the whole workflow.
-- Keep the flow deterministic at this stage.
-- Use a whiteboard, Mermaid, or plain bullets.
-
-<details>
-<summary>Possible Solution for Task 1</summary>
-
+**Deliverable snippet:**
 ```text
-1) Frontend submits document text + metadata
-2) Backend controller validates request shape and auth context
-3) Workflow service prepares prompt variables and policy constraints
-4) Gateway sends model request with trace metadata
-5) Model returns candidate structured output
-6) Post-call validator checks schema + policy rules
-7) Workflow returns accepted output (or fallback/refusal)
-8) Frontend renders structured result for review
+Outcome: needs_review
+Decision source: post-call validation or low-confidence routing
+Required evidence: traceId, promptVersion, modelIdentifier, fallback_decision reason
+User signal: needs_review status + reason + clear next step
+Risk: vague reason text leads to reviewer confusion
 ```
-
-</details>
 
 ---
 
-## Task 2: Identify Trust Boundaries and Risks
+## Task 2: Boundary and Ownership Decisions
 
-Now identify where data should be treated as untrusted and what can go wrong.
+Decide where each rule should live so it remains testable and auditable.
 
 **Your task:**
-- Mark each input/output in your flow as trusted, semi-trusted, or untrusted.
-- Identify at least 4 concrete risks across the flow.
-- For each risk, note where it should be caught.
-- Include at least one prompt-injection-style risk.
+- For each item below, assign ownership: `workflow`, `prompt`, `config`, or `infrastructure`.
+  - Allowed document types
+  - Confidence threshold
+  - Policy-sensitive input patterns
+  - Model selection
+  - Fallback strategy
+  - Regional routing requirement (EU/US style)
+- Add a one-line rationale for each assignment.
 
-**Hints:**
-- User input and document content are untrusted by default.
-- Model outputs are untrusted until validated.
-- Internal config/policy can be trusted, but only when versioned and controlled.
-- Think about hallucination, data leakage, and trace gaps.
-
-<details>
-<summary>Possible Solution for Task 2</summary>
-
-```text
-Boundary examples:
-- Untrusted: user prompt text, uploaded document text
-- Semi-trusted: internal service enrichment data
-- Untrusted until validated: model output
-- Trusted: versioned policy config and schema definitions
-
-Risk examples:
-1) Prompt injection in document text -> catch at input screening + instruction hierarchy
-2) Hallucinated extracted field -> catch at post-call schema/business validation
-3) PII leakage in response -> catch at output redaction filter before UI
-4) Missing audit trail -> catch via gateway trace metadata requirements
-```
-
-</details>
+**Success criterion:**
+- Your team can defend why no critical business rule is hidden only inside prompt text.
 
 ---
 
-## Task 3: Define Control Points (Validation + Logging)
+## Task 3: Minimum Audit Contract
 
-Turn your map into a minimum governance checklist.
+Define the smallest evidence set needed for post-incident review.
 
 **Your task:**
-- Specify at least 2 pre-call validation checks.
-- Specify at least 2 post-call validation checks.
-- Define minimum fields to log/trace for each request.
-- Add a fallback behavior when validation fails.
+- Propose required fields for every request trace.
+- Mark each field as `mandatory` or `nice-to-have`.
+- Include at least one field for each category:
+  - Identity/provenance
+  - Validation evidence
+  - Decision/routing evidence
+  - User-impact evidence
+- Add one privacy rule (what should not be logged by default).
 
-**Hints:**
-- Pre-call checks usually cover input shape, size, and policy constraints.
-- Post-call checks usually cover schema, confidence thresholds, and safety policy.
-- Keep logs privacy-aware; avoid full sensitive payload dumps.
-- A safe fallback can be refusal + human review route.
-
-<details>
-<summary>Possible Solution for Task 3</summary>
-
-```text
-Pre-call checks:
-- Input schema valid (required fields present)
-- Document size/type within limits
-
-Post-call checks:
-- Output matches extraction schema
-- Output passes policy checks (no disallowed fields/content)
-
-Minimum trace/log fields:
-- trace_id
-- request_timestamp
-- prompt_version
-- model_identifier
-- validation_results (pre/post)
-- outcome_status (accepted/fallback/refused)
-
-Fallback:
-- Return "needs review" status with non-destructive message
-- Persist trace for manual follow-up
-```
-
-</details>
+**Hint:**
+- If an auditor asked "why was this denied?" your contract should answer without reading source code.
 
 ---
 
-## Example Output
+## Task 4: Controlled Variation (Make It Interesting)
 
-```text
-Lifecycle map complete: 8 steps
-Trust boundaries identified: 6
-Risks identified: 5
-Validation controls defined: pre-call(2), post-call(3)
-Trace contract defined: yes
-Fallback behavior defined: yes
-```
+Introduce one governance change and predict behavior differences before implementation.
 
----
+Choose one variation:
+- Raise confidence threshold (example: 0.80 -> 0.90)
+- Tighten policy-sensitive deny patterns
+- Relax one review pattern to reduce false positives
+- Disable feature flag for a scenario and define user messaging
 
-## Key Concepts Demonstrated
-
-- **Trust boundaries**: identifying where data must be treated as unsafe by default.
-- **Validation gates**: adding deterministic checks around non-deterministic model behavior.
-- **Auditability**: defining trace metadata required for governance and incident review.
-- **Safe degradation**: failing safely when output quality or policy checks fail.
+**Your task:**
+- State the proposed change.
+- Predict impact on:
+  - Outcome distribution (`accepted`/`needs_review`/`denied`)
+  - Reviewer workload
+  - Risk posture
+- Identify one metric you would monitor after rollout.
 
 ---
 
-## Facilitator Debrief Prompts
+## Final Team Output (1-page design brief)
 
-1. Which boundary was most surprising to your team?
-2. Where did you initially over-trust model output?
-3. What is the minimum trace data needed to explain a bad decision later?
-4. What would you standardize immediately across teams?
+Your brief should include:
+1. Outcome-to-control mapping table.
+2. Ownership decisions with rationale.
+3. Minimum audit contract.
+4. Controlled variation and predicted impact.
+5. Top 2 open questions for Module 2 implementation.
 
 ---
 
-## Next Steps
+## Next Step to Module 2
 
-In Module 2, you will implement this same flow as a structured NestJS workflow with prompt assets in code, gateway integration, and schema-first validation.
+Bring your design brief forward. In Module 2, you will translate these decisions into a concrete NestJS workflow boundary, validation sequence, and trace/log contract.

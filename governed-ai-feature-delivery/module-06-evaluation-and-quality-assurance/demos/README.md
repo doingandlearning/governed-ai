@@ -1,6 +1,10 @@
 # Demos — Module 6
 
 This runbook standardizes Module 6 demos so teams see evaluation as an operational engineering workflow.
+It assumes:
+- `demo-app` is the instructor reference implementation.
+- `demo-app-starter/module_6_starter` is the learner baseline.
+- Teams carry forward prior module decisions (workflow boundaries, guardrails, and UX state contracts) into eval criteria.
 
 ---
 
@@ -16,6 +20,7 @@ Show how to construct a small but meaningful dataset that captures real quality 
 - Use document-processing scenario from earlier modules.
 - Prepare 5-8 representative sample inputs.
 - Define expected outputs and failure labels in advance.
+- Keep existing eval artifacts visible (`dataset`, runner output, and release-gate style summary).
 
 ### Script (suggested flow)
 1. Select a target behavior (structured extraction + fallback handling).
@@ -23,6 +28,7 @@ Show how to construct a small but meaningful dataset that captures real quality 
 3. Define expected outputs for each case.
 4. Assign pass/fail rules per dimension (correctness, format, safety).
 5. Show dataset version tagging and storage pattern.
+6. Map at least one case directly to a prior module control (for example low-confidence routing or policy deny path).
 
 ### Talk track prompts
 - "Which cases matter most for production risk?"
@@ -52,6 +58,7 @@ Demonstrate how to compare variants and use traces to explain regressions and re
 - Prepare two prompt/model variants.
 - Run both against the same dataset.
 - Have trace views available for failed cases.
+- Include token/latency signals in comparison discussion when available.
 
 ### Script (suggested flow)
 1. Execute baseline variant and collect metrics.
@@ -59,6 +66,7 @@ Demonstrate how to compare variants and use traces to explain regressions and re
 3. Compare accuracy, safety, format compliance, latency/cost.
 4. Inspect failed traces to localize differences.
 5. Produce a release recommendation with rationale.
+6. Show what would become a hard gate in Module 7 versus informational metric only.
 
 ### Talk track prompts
 - "Did quality improve where it matters most?"
@@ -68,6 +76,7 @@ Demonstrate how to compare variants and use traces to explain regressions and re
 ### Expected audience output
 - Participants can run fair A/B comparison.
 - Participants can tie outcome differences to trace evidence.
+- Participants can separate "ship/no-ship" criteria from exploratory metrics.
 
 ### Common failure modes
 - Comparing variants on different datasets.

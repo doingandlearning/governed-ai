@@ -1,6 +1,10 @@
 # Demos — Module 3
 
 This runbook standardizes Module 3 demos so teams see explicit decisioning rather than opinion-driven architecture choices.
+It assumes:
+- `demo-app` is the instructor reference implementation.
+- `demo-app-starter/module_3_starter` is the learner baseline.
+- The current app implements deterministic and bounded-tool flows; full agentic runtime is discussed as a governed decision path, not required implementation in this module.
 
 ---
 
@@ -16,18 +20,24 @@ Show how to classify a use case using objective criteria and produce a defensibl
 - Prepare 1-2 sample scenarios (document extraction, email routing).
 - Have the decision criteria visible.
 - Use a simple score sheet or whiteboard matrix.
+- Keep one example from Module 2 visible so teams can anchor decisions to a real baseline.
 
 ### Script (suggested flow)
 1. Present the scenario and constraints.
 2. Score against criteria: determinism, auditability, tool count, eval readiness, blast radius.
 3. Compare pattern options: workflow, bounded tools, agentic.
-4. Select preferred pattern and explain trade-offs.
-5. Document fallback behavior and observability requirements.
+4. For the chosen option, justify tool choice explicitly (why each tool is needed, and why excluded tools stay out).
+5. Confirm tool contracts (inputs, outputs, timeout, retry, and approval needs).
+6. Select preferred pattern and explain trade-offs.
+7. Document fallback behavior and observability requirements.
+8. Explicitly map the chosen pattern to "implement now" vs "defer with evidence" decisions.
 
 ### Talk track prompts
 - "What is the minimum autonomy this scenario needs?"
 - "What would fail first if this ran in production tomorrow?"
 - "Can this be evaluated repeatably?"
+- "If we do not yet implement agentic runtime, what evidence would justify adding it later?"
+- "If we removed one tool from this design, which would it be and why?"
 
 ### Expected audience output
 - Participants can classify a scenario with explicit rationale.
@@ -52,6 +62,7 @@ Demonstrate how to reduce risk by replacing unnecessary autonomy with determinis
 - Prepare a deliberately over-agentic pseudo-flow (many dynamic tools).
 - Prepare a refactored deterministic + bounded-tool version.
 - Show before/after observability and testing complexity.
+- Clarify this is a decision and governance refactor demo; a full agent framework implementation is optional and out-of-scope for core module timing.
 
 ### Script (suggested flow)
 1. Walk through original over-agentic flow.
@@ -68,6 +79,7 @@ Demonstrate how to reduce risk by replacing unnecessary autonomy with determinis
 ### Expected audience output
 - Participants can identify over-agentic hotspots.
 - Participants can propose concrete boundary improvements.
+- Participants understand why "no agent implementation yet" can still be the correct governed outcome.
 
 ### Common failure modes
 - Refactor keeps too many unconstrained tools.
@@ -82,5 +94,6 @@ Ask:
 1. Which criteria changed your initial decision most?
 2. Where do you currently overuse autonomy in your stack?
 3. What one boundary rule can you standardize immediately?
+4. What proof would you require before enabling agentic behavior in production?
 
 Capture outputs as inputs for Module 4 guardrail design.

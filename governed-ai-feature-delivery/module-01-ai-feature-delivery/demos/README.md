@@ -1,96 +1,95 @@
 # Demos — Module 1
 
-This runbook standardizes delivery for Module 1 demos so every cohort sees the same architecture and governance story before coding starts.
+This runbook uses the current demo app in a functionality-first format. For Module 1, do not do a code walkthrough. Show observable behavior, control points, and audit evidence.
 
 ---
 
-## Demo 1: Architecture Walkthrough
+## Demo 1: Live governed flow (frontend + Nest logs)
 
 ### Purpose
-Establish a shared mental model of how AI feature responsibilities are split across frontend, backend workflow, gateway, model, and validation layers.
-
-### Timebox
-10-12 minutes
-
-### Setup
-- Have `slides.md` open on the architecture and lifecycle sections.
-- Use a whiteboard (physical or digital) for live annotation.
-- Prepare a simple "document intake" request example (single JSON payload).
-
-### Script (suggested flow)
-1. Start with the request entering the frontend and being sent to NestJS.
-2. Show where deterministic orchestration lives (workflow service).
-3. Show where prompts are defined and versioned in code.
-4. Show why the gateway is a control point (traceability, routing, policy enforcement).
-5. Show post-call validation and fallback behavior before UI display.
-6. Close by identifying 3 trust boundaries in the flow.
-
-### Talk track prompts
-- "Which layer should own policy checks?"
-- "What should never be hidden inside prompt text only?"
-- "If output is wrong, where should it be caught first?"
-
-### Expected audience output
-- Participants can explain each architecture layer in one sentence.
-- Participants can identify at least 3 trust boundaries.
-
-### Common failure modes
-- Treating gateway as optional plumbing only.
-- Collapsing orchestration into controller logic.
-- Assuming model output is trusted before validation.
-
----
-
-## Demo 2: AI Request Lifecycle Trace Example
-
-### Purpose
-Demonstrate what "governed and auditable" means using a concrete request path and trace metadata contract.
+Show how a single user action is governed end-to-end, including user-visible state, backend interception points, and traceable decisions.
 
 ### Timebox
 12-15 minutes
 
 ### Setup
-- Reuse the same document intake scenario from Demo 1.
-- Prepare a sample trace payload (real or mock) with key fields.
-- Ensure participants can see the request -> response path clearly.
+- Frontend open in browser (`/documents/extract` UI).
+- Nest backend running with console logs visible.
+- Keep `slides.md` open on lifecycle/control-point slides for framing only.
+- If using real LLM in dev profile, keep `DEBUG_LLM_LOGS=true` so request/response payload logs are visible.
 
-### Sample trace fields to show
-- `trace_id`
-- `request_timestamp`
-- `prompt_version`
-- `model_identifier`
-- `input_validation_result`
-- `output_validation_result`
-- `outcome_status` (`accepted`, `fallback`, `refused`)
-
-### Script (suggested flow)
-1. Walk the request through each lifecycle stage.
-2. Show which metadata is added at each stage.
-3. Highlight a failing case (for example invalid schema or policy breach).
-4. Show fallback path and explain why it is safer than forced output.
-5. Compare what can/cannot be answered in an audit with and without traces.
+### What to click and what to point out
+1. **Start with a likely-pass sample** (`Pass sample: invoice`).
+   - In frontend, point out:
+     - `Current state` transitions (`loading` -> `accepted`).
+     - Result metadata (`traceId`, `promptVersion`, `modelIdentifier`).
+     - `Transition telemetry` list as user-facing progress evidence.
+   - In Nest logs, point out the sequence:
+     - `request_received`
+     - `pre_validation_result`
+     - `invoke_started` / `invoke_completed`
+     - `post_validation_result`
+     - `accepted_decision`
+2. **Run a policy-review sample** (`Fail sample: policy review`).
+   - In frontend, point out `needs_review` state and reason.
+   - In Nest logs, show interception before model invocation:
+     - `pre_validation_result` with policy-sensitive reason
+     - `fallback_decision`
+3. **Run a policy-deny sample** (`Fail sample: deny`).
+   - In frontend, point out `denied` outcome and reason.
+   - In Nest logs, show:
+     - `pre_validation_result` with policy-sensitive reason
+     - `deny_decision`
+4. **(Optional) Switch execution mode** to `bounded_tool`.
+   - Run a pass sample again.
+   - In Nest logs, point out `bounded_tool_selection` as a governed architecture decision point.
 
 ### Talk track prompts
-- "What evidence would we need in a post-incident review?"
-- "Which fields are mandatory vs nice-to-have?"
-- "What happens if validation fails but UI still renders output?"
+- "The UI never claims success until the backend decides the final status."
+- "We intercept risky input early, before spending model calls."
+- "Every decision path has trace evidence, not just happy-path outputs."
 
 ### Expected audience output
-- Participants can describe minimum trace metadata.
-- Participants understand where validation decisions must be recorded.
+- Participants can describe what the user sees while work is in progress.
+- Participants can identify where requests are intercepted/evaluated.
+- Participants can map frontend status to backend decision events.
 
-### Common failure modes
-- Logging raw sensitive payloads unnecessarily.
-- Missing prompt/model provenance in traces.
-- Treating fallback as an exception instead of a design path.
+---
+
+## Demo 2: Auditability and control-point narrative
+
+### Purpose
+Show how governance turns runtime behavior into explainable evidence for operational and regulatory review.
+
+### Timebox
+10-12 minutes
+
+### Control points to call out explicitly
+- **Pre-call gate**: input validity and policy-sensitive content checks.
+- **Gateway call**: model invocation with trace metadata and optional dev payload logging.
+- **Post-call gate**: schema and policy checks on model output.
+- **Routing gate**: `accepted` vs `needs_review` vs `denied`, including low-confidence fallback.
+- **UX feedback loop**: state + transition telemetry keeps users informed during and after processing.
+
+### Suggested trace fields/events to show
+- Identity/provenance: `traceId`, `promptVersion`, `modelIdentifier`
+- Lifecycle events: `request_received`, `pre_validation_result`, `post_validation_result`
+- Decisions: `accepted_decision`, `fallback_decision`, `deny_decision`
+- Gateway diagnostics in dev: `llm_request_payload`, `llm_response_payload`
+
+### Key message
+Governance is visible in three places at once:
+1. **Backend logs** (why the system made a decision)
+2. **Frontend status** (what the user should do next)
+3. **Trace metadata** (what an auditor can verify later)
 
 ---
 
 ## Debrief (3-5 minutes)
 
 Ask:
-1. Which boundary in the flow is highest risk?
-2. Which control point feels weakest today in your current stack?
-3. What would you standardize first after this module?
+1. Which interception point prevented the highest-risk failure?
+2. Which log/event would you treat as mandatory evidence in your environment?
+3. What user-status signal is essential to keep trust during uncertain AI behavior?
 
-Capture these as inputs to Module 2 implementation choices.
+Capture answers as design inputs for Module 2 implementation choices.

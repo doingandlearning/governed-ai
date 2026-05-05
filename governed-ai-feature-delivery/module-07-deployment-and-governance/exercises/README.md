@@ -10,6 +10,11 @@ You will:
 4. Define rollback and fallback trigger conditions.
 5. Produce a go/no-go recommendation template.
 
+This lab builds on a starter baseline and prior module artifacts. Bring forward:
+- Module 6 eval dataset, scoring output, and comparison notes
+- Existing trace/guardrail contracts from Modules 2-4
+- UX status/fallback expectations from Module 5
+
 ---
 
 ## Scenario: Releasing a New Extraction Variant
@@ -20,6 +25,12 @@ Your team is preparing to ship an updated AI feature version:
 - Evaluation dataset expanded.
 
 You must decide if this change is release-ready for production.
+
+## Working directory
+
+Use: `governed-ai-feature-delivery/demo-app-starter/module_7_starter/backend`
+
+Reference implementation (instructor only): `governed-ai-feature-delivery/demo-app/backend`
 
 ---
 
@@ -32,6 +43,7 @@ Specify what must be versioned and attached to every release.
 - Define required metadata fields (owner, date, environment, region scope).
 - Define artifact naming or tagging convention.
 - Define minimum documentation attached to release candidate.
+- Ensure bundle links directly to the exact eval run used for decision.
 
 **Hints:**
 - If it changes behavior, it should be versioned.
@@ -65,6 +77,7 @@ Turn quality expectations into enforceable release gates.
 - Define 2 soft gates with escalation behavior.
 - Map each gate to an owner.
 - Define what evidence must be attached when gate fails.
+- Include one trace-completeness gate tied to prior observability requirements.
 
 **Hints:**
 - Hard gates should cover safety-critical outcomes.
@@ -101,6 +114,7 @@ Specify how to contain risk after deployment.
 **Your task:**
 - Define rollback trigger conditions.
 - Define request-level fallback trigger conditions.
+- Define kill-switch trigger conditions.
 - Define required runtime alerts.
 - Produce final go/no-go recommendation format.
 
@@ -159,8 +173,9 @@ Decision: GO with latency monitoring
 
 - Release bundle requirements are explicit and complete.
 - Hard/soft gate criteria are defined with thresholds and owners.
-- Runtime controls include rollback and fallback triggers.
+- Runtime controls include rollback, fallback, and kill-switch triggers.
 - Go/no-go template includes evidence and accountability fields.
+- Team identifies which gates should become mandatory automation in next CI iteration.
 
 ---
 

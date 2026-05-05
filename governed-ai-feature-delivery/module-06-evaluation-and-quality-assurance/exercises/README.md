@@ -10,6 +10,12 @@ You will:
 4. Analyze failures using traces.
 5. Produce a release recommendation with evidence.
 
+This lab builds on a starter baseline, not a full rebuild. Bring forward:
+- Module 2 workflow contract and response statuses
+- Module 3 execution-pattern decisions
+- Module 4 guardrail/refusal rules
+- Module 5 UI-state expectations for `accepted` / `needs_review` / `denied`
+
 ---
 
 ## Scenario: Eval Gate for Document Extraction Feature
@@ -22,6 +28,12 @@ The suite must evaluate:
 - Safety/refusal behavior.
 - Basic operational limits (latency/cost).
 
+## Working directory
+
+Use: `governed-ai-feature-delivery/demo-app-starter/module_6_starter/backend`
+
+Reference implementation (instructor only): `governed-ai-feature-delivery/demo-app/backend`
+
 ---
 
 ## Task 1: Define Golden Dataset
@@ -33,6 +45,7 @@ Create an initial dataset that reflects realistic behavior and risk.
 - Include happy path, edge cases, and failure conditions.
 - Define expected output per case.
 - Assign case tags (correctness, safety, fallback, etc.).
+- Include at least one case for each terminal workflow status used in the app.
 
 **Hints:**
 - Include at least one injection-like hostile input.
@@ -96,6 +109,7 @@ Compare variants and decide what should ship.
 - Record summary metrics for each variant.
 - Inspect failed traces for top regressions.
 - Write release recommendation with rationale.
+- Mark which criteria are "hard gate" vs "monitor only" for next module release policy.
 
 **Hints:**
 - Keep dataset and scoring logic constant between runs.
@@ -153,6 +167,7 @@ Release recommendation: documented
 - At least two variants are compared on same data.
 - Failed cases are analyzed with trace evidence.
 - Team outputs a clear release recommendation.
+- Team identifies at least one metric to promote to Module 7 deployment gate.
 
 ---
 

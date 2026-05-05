@@ -10,6 +10,10 @@ You will:
 4. Specify observability and fallback requirements.
 5. Produce a reusable execution-model checklist for your team.
 
+Important scope note:
+- The current starter/reference app supports deterministic and bounded-tool flows.
+- In this module, agentic is primarily a governed design decision (and rollout criterion), not mandatory runtime implementation.
+
 ---
 
 ## Scenario Set
@@ -20,6 +24,14 @@ Evaluate these scenarios:
 - **Scenario A:** document extraction into structured schema (known fields).
 - **Scenario B:** email triage + enrichment + routing with 1-2 internal tools.
 - **Scenario C:** open-ended investigation assistant with dynamic next-step planning.
+
+Use your Module 2 implementation as the baseline reference when discussing "what changes" per scenario.
+
+## Working directory
+
+Use: `governed-ai-feature-delivery/demo-app-starter/module_3_starter`
+
+Reference implementation (instructor only): `governed-ai-feature-delivery/demo-app`
 
 ---
 
@@ -34,6 +46,10 @@ Use the framework to classify each scenario as:
 - Decide the best-fit pattern for A, B, and C.
 - Give 2-3 reasons per decision.
 - State one major trade-off per scenario.
+- Mark each scenario as one of:
+  - `implement now`
+  - `defer until evidence`
+  - `not appropriate`
 
 **Hints:**
 - Ask: is deterministic output required?
@@ -64,15 +80,18 @@ Trade-off: higher governance/evaluation and debugging overhead
 
 ## Task 2: Define Tool Boundaries
 
-For each scenario, define tool policy boundaries.
+For each scenario, define tool policy boundaries and explicit tool-choice rationale.
 
 **Your task:**
+- Select which tools are allowed per scenario and justify each selection.
+- Name one tool you intentionally exclude per scenario and explain why.
 - Specify tool allowlist (which tools are permitted).
 - Define parameter constraints (size, range, allowed values).
 - Define timeout/retry policy.
 - Define which actions require human approval.
 
 **Hints:**
+- Evaluate tools on reliability, side-effect risk, latency/cost, and observability fit.
 - Avoid open-ended "any tool" access.
 - High-risk side effects should require confirmation.
 - Log tool intent + result for each call.
@@ -105,6 +124,7 @@ Specify what must be traceable and how failures degrade safely.
 - Define what triggers fallback.
 - Define deterministic fallback response shape.
 - Define one evaluation checkpoint for release readiness.
+- For any agentic choice, define explicit "enablement gates" (what evidence is required before implementation/production use).
 
 **Hints:**
 - Include model/prompt/tool provenance in traces.
@@ -155,6 +175,9 @@ Tool boundary policy:
 Observability contract:
 - trace schema defined
 - fallback contract defined
+
+Enablement decision:
+- agentic implementation deferred pending eval and guardrail evidence
 ```
 
 ---
@@ -174,6 +197,7 @@ Observability contract:
 - Tool boundaries are explicit for at least one bounded/agentic scenario.
 - Observability requirements are listed before implementation details.
 - Fallback behavior is defined and deterministic.
+- For agentic scenarios, team provides explicit enablement/defer criteria.
 
 ---
 

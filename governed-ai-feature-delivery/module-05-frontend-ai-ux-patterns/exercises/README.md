@@ -10,6 +10,11 @@ You will:
 4. Handle streaming and fallback states deterministically.
 5. Produce a reusable UI pattern for governed AI features.
 
+This lab builds on a starter baseline, not a full rebuild. Bring forward:
+- Module 2: backend response contract and trace references
+- Module 3: execution-pattern reasoning
+- Module 4: guardrail outcomes (`accepted`, `needs_review`, `denied`)
+
 ---
 
 ## Scenario: Extraction Review Interface
@@ -20,9 +25,15 @@ The component must:
 - Display structured extracted fields.
 - Surface confidence and evidence context.
 - Support user edits before committing.
-- Handle `accepted`, `needs_review`, `error`, and streaming states.
+- Handle `loading`, `accepted`, `needs_review`, `denied`, and `error` states.
 
 This lab connects backend guardrails to safe user interaction patterns.
+
+## Working directory
+
+Use: `governed-ai-feature-delivery/demo-app-starter/module_5_starter/frontend`
+
+Reference implementation (instructor only): `governed-ai-feature-delivery/demo-app/frontend`
 
 ---
 
@@ -90,13 +101,15 @@ Complete the governed interaction flow.
 **Your task:**
 - Add edit-before-save actions for uncertain fields.
 - Require confirmation for high-impact commit.
-- Implement streaming states: `loading`, `partial`, `complete`.
-- Implement fallback UI for `needs_review` and `error`.
+- Implement explicit state transitions for baseline request/response flow.
+- Implement fallback UI for `needs_review`, `denied`, and `error`.
+- Optional extension: map same state model to SSE (`loading` -> `partial` -> terminal).
 
 **Hints:**
 - Keep state transitions explicit and deterministic.
 - Partial output should not auto-commit.
 - Use stable fallback UI copy and actions across screens.
+- Baseline app does not require full SSE implementation in this module.
 
 <details>
 <summary>Possible Solution for Task 3</summary>
@@ -146,8 +159,9 @@ Commit gated: yes
 - Structured result card renders with field-level status.
 - Confidence and evidence are visible for key fields.
 - Uncertain fields support edit-before-save.
-- Streaming and fallback states are implemented and testable.
+- Baseline state transitions and fallback states are implemented and testable.
 - UI behavior aligns with backend status contract.
+- Team can explain how this state model extends to streaming without breaking governance controls.
 
 ---
 

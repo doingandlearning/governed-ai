@@ -10,6 +10,10 @@ You will:
 4. Define refusal/fallback behavior for unsafe outcomes.
 5. Produce a reusable guardrail checklist for future features.
 
+This lab builds on a starter baseline, not a finished implementation rebuild. Use your prior module decisions as inputs:
+- Module 2: workflow boundary + trace contract
+- Module 3: execution pattern and tool-boundary decisions
+
 ---
 
 ## Scenario: Secure Document Processing Path
@@ -23,6 +27,12 @@ The system currently:
 
 Your task is to add guardrails so unsafe or uncertain outputs do not reach end users unchecked.
 
+## Working directory
+
+Use: `governed-ai-feature-delivery/demo-app-starter/module_4_starter`
+
+Reference implementation (instructor only): `governed-ai-feature-delivery/demo-app`
+
 ---
 
 ## Task 1: Map Trust Boundaries and Risks
@@ -34,6 +44,7 @@ Identify where untrusted content enters and where controls should be enforced.
 - Identify at least 4 concrete risks (including prompt injection).
 - Map each risk to a specific guardrail layer.
 - Define one trace field that proves each guardrail was applied.
+- Tie each proposed guardrail to ownership (`workflow`, `validator`, `gateway`, `config`, or frontend UX signal).
 
 **Hints:**
 - User and document content are untrusted by default.
@@ -64,6 +75,7 @@ Implement guardrails before and during model/tool interaction.
 - Add trust labeling metadata to request context.
 - Define a tool allowlist and parameter constraints.
 - Add timeout/retry limits for tool invocation.
+- Ensure tool guardrails are implemented within the feature slice (no cross-cutting ad hoc files).
 
 **Hints:**
 - Keep pre-call checks deterministic and fast.
@@ -97,6 +109,7 @@ Protect frontend and downstream systems from unsafe output.
 - Add policy checks (allowed categories/content rules).
 - Return `accepted` only when all checks pass.
 - Return `needs_review` or refusal when checks fail.
+- Define explicit routing criteria for `needs_review` versus `denied`.
 
 **Hints:**
 - Schema pass does not guarantee policy pass.
@@ -157,6 +170,7 @@ validation: pre=pass, schema=pass, policy=fail
 - Output path enforces schema + policy validation.
 - Fallback/refusal path is deterministic and traceable.
 - Security-relevant decision metadata is logged.
+- Team can point to where Module 2/3 design decisions are enforced in this module.
 
 ---
 
