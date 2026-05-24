@@ -2,6 +2,7 @@ export type ExtractRequest = {
   text: string;
   source?: string;
   traceId?: string;
+  executionMode?: "deterministic" | "bounded_tool";
 };
 
 export type ExtractedDocument = {
@@ -24,7 +25,12 @@ export type WorkflowFallbackResponse = {
   traceId: string;
   promptVersion: string;
   modelIdentifier: string;
-  reason: "invalid_input" | "validation_failed";
+  reason: "invalid_input" | "validation_failed" | "low_confidence";
+  metadata?: {
+    confidenceThreshold?: number;
+    observedConfidence?: number;
+    routingReason?: string;
+  };
 };
 
 export type WorkflowResponse = WorkflowAcceptedResponse | WorkflowFallbackResponse;

@@ -9,7 +9,7 @@
  */
 
 import * as readline from "readline";
-
+const SHOW_PAYLOADS = process.env.PRETTY_TRACE_PAYLOADS === "true";
 // ANSI colour helpers
 const c = {
   reset: "\x1b[0m",
@@ -90,17 +90,32 @@ function formatDetails(
   extra: Partial<TraceEvent>
 ): string[] {
   const lines: string[] = [];
-
-  // Skip dumping full payload details in normal view — too noisy for demos
   if (event === "llm_request_payload" || event === "llm_response_payload") {
     const mode = details?.mode ?? "unknown";
     const tokens =
       event === "llm_response_payload" && details?.tokenUsage
         ? `  tokens: ${(details.tokenUsage as Record<string, unknown>).totalTokens ?? "?"}`
         : "";
-    lines.push(
-      `${c.dim}          mode: ${mode}${tokens}${c.reset}`
-    );
+  
+    lines.push(`${c.dim}          mode: ${mode}${tokens}${c.reset}`);
+  
+    if (SHOW_PAYLOADS && event === "llm_request_payload") {
+      const request = details?.request as Record<string, unknown> | undefined;
+      const messages = request?.messages as Array<{ role: string; content: string }> | undefined;
+      const userMessage = messages?.find((m) => m.role === "user");
+      if (userMessage?.content) {
+        const excerpt = userMessage.content.replace(/\n/g, "↵");
+        lines.push(`${c.dim}          prompt: ${c.yellow}${excerpt}${c.reset}`);
+      }
+    }
+  
+    if (SHOW_PAYLOADS && event === "llm_response_payload") {
+      const raw = details?.rawOutput as Record<string, unknown> | undefined;
+      if (raw) {
+        lines.push(`${c.dim}          output: ${c.green}${JSON.stringify(raw).slice(0, 200)}${c.reset}`);
+      }
+    }
+  
     return lines;
   }
 
