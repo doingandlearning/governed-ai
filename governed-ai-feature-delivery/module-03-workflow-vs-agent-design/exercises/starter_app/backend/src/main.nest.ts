@@ -4,7 +4,6 @@ import { AppModule } from "./nest/app.module";
 import { getRuntimeProfileConfig } from "./config/runtimeProfile";
 
 async function bootstrap() {
-  console.log("TEST", process.env.TEST);
   const config = getRuntimeProfileConfig();
   const app = await NestFactory.create(AppModule);
   app.enableCors({
@@ -16,7 +15,7 @@ async function bootstrap() {
   await app.listen(port);
   console.log(`Nest backend listening on http://localhost:${port}`);
   console.log(
-    `Runtime profile=${config.profile} llmMode=${config.llmMode} mastra=${String(config.useMastraRuntime)} model=${config.modelIdentifier} confidenceThreshold=${config.confidenceThreshold} featureDocumentExtractionEnabled=${String(config.featureDocumentExtractionEnabled)} debugLlmLogs=${String(config.debugLlmLogs)}`
+    `Runtime profile=${config.profile} llmMode=${config.llmMode} model=${config.modelIdentifier} confidenceThreshold=${config.confidenceThreshold} featureDocumentExtractionEnabled=${String(config.featureDocumentExtractionEnabled)} debugLlmLogs=${String(config.debugLlmLogs)}`
   );
 }
 

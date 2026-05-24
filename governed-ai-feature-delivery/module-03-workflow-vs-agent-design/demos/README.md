@@ -1,99 +1,28 @@
-# Demos — Module 3
+*[Send the standard happy path request first — they've seen this trace.]*
 
-This runbook standardizes Module 3 demos so teams see explicit decisioning rather than opinion-driven architecture choices.
-It assumes:
-- `demo-app` is the instructor reference implementation.
-- `demo-app-starter/module_3_starter` is the learner baseline.
-- The current app implements deterministic and bounded-tool flows; full agentic runtime is discussed as a governed decision path, not required implementation in this module.
+```json
+{
+  "text": "Invoice #INV-2026 due in 14 days for 980 EUR from ACME Corp.",
+  "source": "demo"
+}
+```
 
----
+*[Then send the same request with `executionMode: "bounded_tool"`]:*
 
-## Demo 1: Applying Workflow vs Agent Decision Matrix
+```json
+{
+  "text": "Invoice #INV-2026 due in 14 days for 980 EUR from ACME Corp.",
+  "source": "demo",
+  "executionMode": "bounded_tool"
+}
+```
 
-### Purpose
-Show how to classify a use case using objective criteria and produce a defensible execution-model decision.
+*[Point at the `bounded_tool_selection` trace event:]*
 
-### Timebox
-12-15 minutes
+```
+workflow    🔧 bounded_tool_selection
+             tools: ["entity_normalizer","external_web_search"]
+             blocked: ["external_web_search"]
+```
 
-### Setup
-- Prepare 1-2 sample scenarios (document extraction, email routing).
-- Have the decision criteria visible.
-- Use a simple score sheet or whiteboard matrix.
-- Keep one example from Module 2 visible so teams can anchor decisions to a real baseline.
-
-### Script (suggested flow)
-1. Present the scenario and constraints.
-2. Score against criteria: determinism, auditability, tool count, eval readiness, blast radius.
-3. Compare pattern options: workflow, bounded tools, agentic.
-4. For the chosen option, justify tool choice explicitly (why each tool is needed, and why excluded tools stay out).
-5. Confirm tool contracts (inputs, outputs, timeout, retry, and approval needs).
-6. Select preferred pattern and explain trade-offs.
-7. Document fallback behavior and observability requirements.
-8. Explicitly map the chosen pattern to "implement now" vs "defer with evidence" decisions.
-
-### Talk track prompts
-- "What is the minimum autonomy this scenario needs?"
-- "What would fail first if this ran in production tomorrow?"
-- "Can this be evaluated repeatably?"
-- "If we do not yet implement agentic runtime, what evidence would justify adding it later?"
-- "If we removed one tool from this design, which would it be and why?"
-
-### Expected audience output
-- Participants can classify a scenario with explicit rationale.
-- Participants can articulate control requirements tied to selected pattern.
-
-### Common failure modes
-- Choosing agentic because it feels more capable.
-- Skipping evaluation feasibility in decision criteria.
-- No fallback or traceability plan tied to chosen model.
-
----
-
-## Demo 2: Refactor Over-Agentic Flow to Bounded Workflow
-
-### Purpose
-Demonstrate how to reduce risk by replacing unnecessary autonomy with deterministic orchestration and bounded tools.
-
-### Timebox
-12-15 minutes
-
-### Setup
-- Prepare a deliberately over-agentic pseudo-flow (many dynamic tools).
-- Prepare a refactored deterministic + bounded-tool version.
-- Show before/after observability and testing complexity.
-- Clarify this is a decision and governance refactor demo; a full agent framework implementation is optional and out-of-scope for core module timing.
-
-### Script (suggested flow)
-1. Walk through original over-agentic flow.
-2. Identify risk points (dynamic tools, weak boundaries, unclear trace paths).
-3. Replace open decisions with explicit workflow steps.
-4. Keep only essential tools with strict contracts.
-5. Compare auditability, eval complexity, and failure handling before vs after.
-
-### Talk track prompts
-- "Which autonomy is adding value vs noise?"
-- "Which tool actions require hard constraints?"
-- "How does this change incident debugging effort?"
-
-### Expected audience output
-- Participants can identify over-agentic hotspots.
-- Participants can propose concrete boundary improvements.
-- Participants understand why "no agent implementation yet" can still be the correct governed outcome.
-
-### Common failure modes
-- Refactor keeps too many unconstrained tools.
-- No explicit policy checks for tool parameters.
-- Inconsistent response/fallback paths after refactor.
-
----
-
-## Debrief (3-5 minutes)
-
-Ask:
-1. Which criteria changed your initial decision most?
-2. Where do you currently overuse autonomy in your stack?
-3. What one boundary rule can you standardize immediately?
-4. What proof would you require before enabling agentic behavior in production?
-
-Capture outputs as inputs for Module 4 guardrail design.
+*[Then open `tools.ts` and show `ALLOWED_TOOLS`.]*
