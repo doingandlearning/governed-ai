@@ -2,217 +2,430 @@
 
 **Module 3 — Governed AI Feature Delivery**
 
----
+<!-- end_slide -->
 
-## The problem we're solving
+## You have a working workflow
 
-Teams overuse agents where deterministic workflows would be safer.
+In Module 2 you built a deterministic, traceable endpoint.
 
-- <span class="fragment">Unpredictable behaviour</span>
-- <span class="fragment">Difficult auditability</span>
-- <span class="fragment">Harder testing and eval coverage</span>
-- <span class="fragment">Higher operational risk</span>
+<!-- pause -->
 
-<span class="fragment">Now: apply a practical decision framework.</span>
+Fixed sequence. Known output contract. Pre-call and post-call validation. Fallback on failure.
 
----
+<!-- pause -->
 
-## Why teams get this wrong
+**Think:** what kind of problem would break this pattern?
 
-- <span class="fragment">"Agent" sounds more capable, so it is chosen by default.</span>
-- <span class="fragment">Execution boundaries are not defined before implementation.</span>
-- <span class="fragment">Tool usage is left too open-ended.</span>
-- <span class="fragment">Failure and traceability costs are discovered too late.</span>
+*60 seconds — what would your workflow struggle to handle?*
 
----
+<!-- end_slide -->
+
+## When the fixed sequence breaks down
+
+A deterministic workflow assumes:
+
+- The steps are known in advance.
+<!-- pause -->
+- The output contract is stable.
+<!-- pause -->
+- The same input always follows the same path.
+
+<!-- pause -->
+
+**Some problems don't fit those assumptions.**
+
+<!-- pause -->
+
+Classifying a known document type: fits.
+
+Triaging an ambiguous email with unknown intent: maybe.
+
+Exploring a corpus of documents to propose next actions: probably not.
+
+<!-- pause -->
+
+The question isn't which pattern is *better* — it's which pattern fits *this problem*.
+
+<!-- end_slide -->
 
 ## Three execution patterns
 
-| Pattern | Best for | Trade-off |
-| ------- | -------- | --------- |
-| Deterministic workflow | Repeatable, auditable tasks | Less flexibility |
-| Bounded tools | Controlled external actions | Added orchestration complexity |
-| Agentic flow | Open-ended planning and exploration | Harder governance and testing |
+| Pattern | Best for | Governance cost |
+| ------- | -------- | --------------- |
+| Deterministic workflow | Repeatable, auditable tasks | Low |
+| Bounded tools | Controlled external actions | Medium |
+| Agentic flow | Open-ended planning and exploration | High |
 
----
+<!-- pause -->
+
+**Think:** where does your current feature sit? Where might it move?
+
+*Pair: 90 seconds.*
+
+<!-- end_slide -->
+
+## [ ANIMATION — Agent Harness ]
+
+*Switch to the agent harness / car animation now.*
+
+*Return here when done.*
+
+<!-- end_slide -->
 
 ## Pattern 1: Deterministic workflow
 
-- <span class="fragment">Fixed sequence with explicit branching</span>
-- <span class="fragment">Known tool set and output contract</span>
-- <span class="fragment">Best for extraction, classification, routing, compliance</span>
-- <span class="fragment">Easiest to test, evaluate, and audit</span>
+You've built this. You know what it looks like.
 
----
+<!-- pause -->
 
-## Pattern 2: Bounded tool usage
+- Fixed sequence with explicit branching
+<!-- pause -->
+- Known output contract — the frontend can depend on it
+<!-- pause -->
+- Easiest to test, evaluate, and audit
+<!-- pause -->
+- Best for extraction, classification, routing, compliance
 
-- <span class="fragment">Tools are permitted but within strict boundaries</span>
-- <span class="fragment">Tool contract defined by schema and policy</span>
-- <span class="fragment">Good when one or two external enrichments are required</span>
-- <span class="fragment">Preserves control while extending capability</span>
+<!-- pause -->
 
----
+> When in doubt, start here. Move away only when evidence demands it.
+
+<!-- end_slide -->
+
+## Pattern 2: Bounded tools
+
+Same workflow structure — but the model can invoke a constrained set of tools as part of processing.
+
+<!-- pause -->
+
+Not arbitrary tool execution. An **allowlist** — the only tools that can run are the ones you explicitly permit.
+
+<!-- pause -->
+
+Let's see it.
+
+<!-- end_slide -->
+
+## Demo: deterministic vs bounded tool path
+
+*[Send the standard happy path request first — they've seen this trace.]*
+
+```json
+{
+  "text": "Invoice #INV-2026 due in 14 days for 980 EUR from ACME Corp.",
+  "source": "demo"
+}
+```
+
+*[Then send the same request with `executionMode: "bounded_tool"`]:*
+
+```json
+{
+  "text": "Invoice #INV-2026 due in 14 days for 980 EUR from ACME Corp.",
+  "source": "demo",
+  "executionMode": "bounded_tool"
+}
+```
+
+*[Point at the `bounded_tool_selection` trace event:]*
+
+```
+workflow    🔧 bounded_tool_selection
+             tools: ["entity_normalizer","external_web_search"]
+             blocked: ["external_web_search"]
+```
+
+*[Then open `tools.ts` and show `ALLOWED_TOOLS`.]*
+
+<!-- end_slide -->
+
+## [ ANIMATION — Code Execution ]
+
+*Switch to the code execution / sandbox containment animation now.*
+
+*Return here when done.*
+
+<!-- end_slide -->
+
+## What the demo shows
+
+The workflow requested two tools. One ran. One was blocked.
+
+<!-- pause -->
+
+`entity_normalizer` is on the allowlist — it ran.
+
+`external_web_search` is not — it was silently blocked and logged.
+
+<!-- pause -->
+
+The trace records both: what was requested, what was allowed, what was blocked.
+
+<!-- pause -->
+
+**That's the governance obligation for bounded tools:**
+- Explicit allowlist — not "permit unless blocked"
+- Every tool decision logged
+- Output still passes through post-call validation
+
+<!-- pause -->
+
+> The tool boundary is a governance control point, not just an implementation detail.
+
+<!-- end_slide -->
 
 ## Pattern 3: Agentic behaviour
 
-- <span class="fragment">Adaptive planning and dynamic decision chains</span>
-- <span class="fragment">Useful for ambiguous, exploratory tasks</span>
-- <span class="fragment">Requires stronger observability and guardrails</span>
-- <span class="fragment">Highest governance and evaluation overhead</span>
+Adaptive planning. Dynamic decision chains. The model decides what to do next based on intermediate results.
 
-<span class="fragment">Agentic is not the advanced default, it is the high-cost option.</span>
+<!-- pause -->
 
----
+Useful for genuinely open-ended problems:
 
-## Decision framework
+- Exploring a corpus with unknown structure
+- Multi-step investigation where next steps depend on findings
+- Tasks where the sequence can't be defined in advance
 
-- <span class="fragment">Need deterministic output? Prefer workflow.</span>
-- <span class="fragment">Need bounded external actions? Use restricted tools.</span>
-- <span class="fragment">Need adaptive multi-step exploration? Consider agent.</span>
-- <span class="fragment">If uncertain, start deterministic and evolve with evidence.</span>
+<!-- pause -->
 
----
+**This is the high-cost option — not the advanced default.**
 
-## Practical decision questions
+<!-- pause -->
 
-1. <span class="fragment">Is deterministic behaviour required?</span>
-2. <span class="fragment">Is strict auditability required?</span>
-3. <span class="fragment">How many tools are truly needed?</span>
-4. <span class="fragment">Can quality be evaluated repeatably?</span>
-5. <span class="fragment">What is the blast radius if tool calls go wrong?</span>
+- Harder to test: you can't enumerate the paths
+- Harder to audit: the decision chain is dynamic
+- Harder to evaluate: success criteria are less crisp
+- Higher blast radius when tool calls go wrong
 
-<span class="fragment">Answer these before implementation not after.</span>
+<!-- end_slide -->
 
----
+## The decision questions
 
-## Workflow vs agent: predictability and auditability
+Answer these before implementation — not after.
 
-| Dimension | Workflow | Agent |
-| --------- | -------- | ----- |
-| Predictability | High | Medium / Low |
-| Auditability | High | Medium |
+<!-- pause -->
 
-<span class="fragment">Lower predictability means harder release criteria and more evaluation overhead.</span>
+1. Is deterministic output required?
+<!-- pause -->
+2. Is strict auditability required?
+<!-- pause -->
+3. How many tools are genuinely needed — and can you allowlist them?
+<!-- pause -->
+4. Can quality be evaluated repeatably?
+<!-- pause -->
+5. What is the blast radius if a tool call goes wrong?
 
----
+<!-- pause -->
 
-## Workflow vs agent: tooling and testability
+**Think:** apply these to your current feature. Which answers push you toward workflow? Which toward agent?
 
-| Dimension | Workflow | Agent |
-| --------- | -------- | ----- |
-| Tool control | Explicit | Dynamic |
-| Testability | Straightforward | Harder |
-| Failure analysis | Easier | More complex |
+*Pair: 2 minutes.*
 
-<span class="fragment">Dynamic tool selection is a governance cost, not just an implementation detail.</span>
+<!-- end_slide -->
 
----
+## Classify these scenarios
 
-## Tool selection boundaries
+Three scenarios. For each one — workflow, bounded tools, or agentic?
 
-- <span class="fragment">Allowlist tools — do not permit arbitrary tool execution.</span>
-- <span class="fragment">Constrain parameters and payload sizes explicitly.</span>
-- <span class="fragment">Define timeouts and retry behaviour per tool.</span>
-- <span class="fragment">Log tool call intent and outcome in every trace.</span>
+<!-- pause -->
 
----
+**Scenario A:** Parse known fields from a structured invoice PDF.
 
-## MCP tools vs internal tools
+<!-- pause -->
 
-| | MCP tools | Internal / master tools |
-| - | --------- | ----------------------- |
-| Best for | Standard integrations, broad capability | Policy-sensitive, domain-specific operations |
-| Ownership | External or platform-managed | Team-owned with tighter controls |
-| Governance | Explicit boundaries required | Explicit boundaries required |
+**Scenario B:** Classify an incoming email, route to a team, and enrich with CRM context before routing.
 
----
+<!-- pause -->
 
->The governance obligation is identical, the ownership model is not.
+**Scenario C:** Given access to a document corpus, propose the three most relevant documents for a user query and explain why.
 
----
+<!-- pause -->
 
-## Case study A: Document extraction
+*Pair: classify all three, then be ready to defend Scenario B — that's the contested one.*
 
-**Need:** parse known fields from known document classes
+<!-- end_slide -->
 
-- <span class="fragment">Deterministic workflow is almost always the right pattern</span>
-- <span class="fragment">Bounded tools optional for enrichment steps</span>
-- <span class="fragment">Agentic pattern introduces unnecessary risk and overhead</span>
+## Scenario verdicts
 
----
+**A — Document extraction:** deterministic workflow.
 
-## Case study B: Email triage and routing
+<!-- pause -->
 
-**Need:** classify intent, route to teams, enrich context
+Known fields, known document types, known output contract. Adding agents here introduces risk and overhead with no benefit.
 
-- <span class="fragment">Workflow plus bounded tools is usually the strongest pattern</span>
-- <span class="fragment">Agent behaviour may be justified for ambiguous edge cases only</span>
-- <span class="fragment">Route uncertainty should trigger fallback to human review</span>
+<!-- pause -->
 
----
+**B — Email triage:** workflow plus bounded tools.
 
-## Case study C: Open-ended investigation assistant
+<!-- pause -->
 
-**Need:** explore documents and systems, propose next actions
+The classification step is deterministic. The CRM lookup is a bounded tool call. Agentic behaviour is only justified for genuine edge cases — and those should fall back to human review, not autonomous resolution.
 
-- <span class="fragment">Agentic behaviour may be justified here</span>
-- <span class="fragment">Requires deeper trace coverage and stronger guardrails</span>
-- <span class="fragment">Use approval checkpoints before high-risk actions execute</span>
+<!-- pause -->
 
----
+**C — Document exploration:** agentic may be justified.
 
-## Migration strategy: workflow first
+<!-- pause -->
 
-- <span class="fragment">Start with a deterministic baseline.</span>
-- <span class="fragment">Measure where flexibility is actually needed: use evidence, not assumption.</span>
-- <span class="fragment">Introduce bounded tools before moving to autonomy.</span>
-- <span class="fragment">Add agentic behaviour only when evaluation results support it.</span>
+The sequence can't be defined in advance. But it still needs: deeper trace coverage, approval checkpoints before high-risk actions, and stronger evaluation criteria before production.
 
----
+<!-- end_slide -->
+
+## Tool boundaries: the rules
+
+Whether MCP tools or internal tools, the obligations are the same:
+
+<!-- pause -->
+
+- Allowlist tools — do not permit arbitrary execution
+<!-- pause -->
+- Constrain parameters and payload sizes explicitly
+<!-- pause -->
+- Define timeouts and retry behaviour per tool
+<!-- pause -->
+- Log tool call intent and outcome in every trace
+
+<!-- pause -->
+
+The ownership model differs — MCP tools are platform-managed, internal tools are team-owned — but the governance requirement is identical.
+
+<!-- end_slide -->
+
+## LLM skills vs MCPs
+
+Two ways to extend what a model can do. MCP is the current standard — and a live source of frustration.
+
+<!-- pause -->
+
+| | LLM skills (built-in tools) | MCP tools |
+| - | --------------------------- | --------- |
+| What they are | Capabilities baked into the model or SDK | External servers the harness connects to at runtime |
+| Ownership | Model provider or your team | Platform-managed or third-party |
+| Latency | Low — no network hop | Higher — crosses a process boundary |
+| Governance | Defined at model/SDK level | Explicit boundaries required per tool |
+| Best for | Core reasoning tasks, structured output, code gen | Dynamic tool discovery, stateful integrations, IDE tooling |
+
+<!-- pause -->
+
+**The honest picture on MCP right now:**
+
+<!-- pause -->
+
+It solves real problems — dynamic tool discovery, session state, bidirectional communication — things a plain REST call can't do.
+
+<!-- pause -->
+
+But the production costs are real: tool schema overhead can consume a significant portion of your context window before the agent processes any input. The ecosystem is fragmented. Authentication across multiple servers adds friction most teams didn't anticipate.
+
+<!-- pause -->
+
+Perplexity moved away from MCP in early 2026. So did others. Direct REST APIs and CLI approaches are gaining ground for fixed tool sets in production.
+
+<!-- end_slide -->
+
+## The governance point that doesn't change
+
+Whether you use MCP, a direct API, or CLI — the obligations are identical.
+
+<!-- pause -->
+
+Switching protocol does not eliminate prompt injection.
+
+Switching protocol does not fix privilege escalation.
+
+Switching protocol does not reduce your attack surface.
+
+<!-- pause -->
+
+**It changes the plumbing. It does not change the threat model.**
+
+<!-- pause -->
+
+The decision heuristic:
+
+<!-- pause -->
+
+- Fixed, known tool set in production → direct API or CLI, lower overhead
+<!-- pause -->
+- Dynamic tool discovery, stateful interactions, IDE/dev tooling → MCP is still the strongest fit
+<!-- pause -->
+- Either way: allowlist, log every tool decision, test the failure path
+
+<!-- end_slide -->
+
+## Migration strategy
+
+You will almost always start with more workflow than you need and less agent than you think.
+
+<!-- pause -->
+
+1. Build the deterministic baseline first.
+<!-- pause -->
+2. Measure where the fixed sequence actually fails — use evidence, not assumption.
+<!-- pause -->
+3. Introduce bounded tools before moving to autonomy.
+<!-- pause -->
+4. Add agentic behaviour only when evaluation results support it.
+
+<!-- pause -->
+
+> Choosing agent over workflow without evidence is a governance decision with costs — it just feels like an architecture decision.
+
+<!-- end_slide -->
 
 ## Failure modes to watch
 
-- <span class="fragment">Over-agentic design applied to deterministic problems</span>
-- <span class="fragment">Too many tools with weak parameter contracts</span>
-- <span class="fragment">No trace path covering dynamic tool decisions</span>
-- <span class="fragment">No fallback plan when confidence is low or tool calls fail</span>
+- Over-agentic design applied to deterministic problems
+<!-- pause -->
+- Tool allowlists that are too broad — "everything except the dangerous ones"
+<!-- pause -->
+- No trace coverage of dynamic tool decisions
+<!-- pause -->
+- No fallback when confidence is low or tool calls fail
+<!-- pause -->
+- Releasing agentic features before evaluation baselines exist
 
----
-
-## What we produce in Module 3
-
-- <span class="fragment">Execution pattern decisions for your key use cases</span>
-- <span class="fragment">Tool boundary rules and parameter constraints</span>
-- <span class="fragment">A reusable decision checklist for your team</span>
-- <span class="fragment">Rationale to carry directly into the security and guardrails module</span>
-
----
+<!-- end_slide -->
 
 ## Summary
 
-1. <span class="fragment">**Agentic is not the default**: choose autonomy only when justified.</span>
-2. <span class="fragment">**Workflow first** keeps delivery predictable and auditable.</span>
-3. <span class="fragment">**Bounded tools** offer a practical and controllable middle ground.</span>
-4. <span class="fragment">**Decision frameworks** replace intuition with defensible engineering rationale.</span>
+- **Agentic is not the default** — choose autonomy only when the decision questions justify it.
+<!-- pause -->
+- **Workflow first** keeps delivery predictable, auditable, and testable.
+<!-- pause -->
+- **Bounded tools** offer a controllable middle ground with explicit governance obligations.
+<!-- pause -->
+- **The decision framework** replaces "agents sound more capable" with defensible engineering rationale.
 
----
+<!-- end_slide -->
 
 ## Bridge to Module 4
 
-**What we've established:**
+**What you've established:**
 
-- <span class="fragment">Execution model decisions with explicit rationale.</span>
-- <span class="fragment">Tool boundaries that define your attack surface.</span>
+- Execution model decisions with explicit rationale.
+<!-- pause -->
+- Tool boundaries that define your attack surface.
 
-**What's next:**
+<!-- pause -->
 
-- <span class="fragment">Regardless of execution model, the same attack vectors apply.</span>
-- <span class="fragment">Your first task in Module 4: map your tool boundaries against the threat model.</span>
+**The question Module 4 asks:**
 
-<span class="fragment">Module 4 covers security and guardrails — securing the end-to-end AI feature path.</span>
+Regardless of execution model — workflow, bounded tools, or agent — the same attack vectors apply.
 
----
+<!-- pause -->
+
+- Where can inputs be manipulated?
+<!-- pause -->
+- Where can tool calls be exploited?
+<!-- pause -->
+- Where does your trace coverage have gaps?
+
+<!-- pause -->
+
+*Your first task in Module 4: map your tool boundaries against the threat model.*
+
+<!-- end_slide -->
 
 # Questions?
 

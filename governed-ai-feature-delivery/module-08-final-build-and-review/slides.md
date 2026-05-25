@@ -2,128 +2,156 @@
 
 **Module 8 — Governed AI Feature Delivery**
 
----
+<!-- end_slide -->
 
-## Build objective
+## What this session is
 
-Deliver a production-style AI feature with governance built in.
+Not a teaching session. A proof session.
 
-- <span class="fragment">Backend workflow and validation layers</span>
-- <span class="fragment">Bounded tool usage where needed</span>
-- <span class="fragment">Structured frontend review experience</span>
-- <span class="fragment">Evaluation results and release criteria</span>
+<!-- pause -->
 
-<span class="fragment">This is not a demo sprint. It is an integration and readiness proof.</span>
+You have built:
 
----
+- A governed backend workflow with validation layers
+- Bounded tool usage with an allowlist and trace
+- Layered guardrails at input, output, and tool boundaries
+- A structured frontend review experience
+- An evaluation suite with release gate results
+- A release-readiness pack with a go/no-go recommendation
 
-## Why this final module matters
+<!-- pause -->
 
-- <span class="fragment">Isolated module knowledge is not enough for production delivery.</span>
-- <span class="fragment">Integration exposes real trade-offs and weak boundaries.</span>
-- <span class="fragment">Teams need evidence-backed decisions, not one-time demos.</span>
-- <span class="fragment">This is where reusable delivery patterns are proven under pressure.</span>
+Module 8 is where those pieces have to work together — and where the gaps become visible.
 
----
+<!-- pause -->
 
-## Final build scope
+> Integration exposes real trade-offs and weak boundaries. That is the point.
 
-Your team solution must include:
+<!-- end_slide -->
 
-- <span class="fragment">Backend workflow with clear orchestration boundaries</span>
-- <span class="fragment">Guardrails for input, tool, and output paths</span>
-- <span class="fragment">Frontend review flow with uncertainty handling</span>
-- <span class="fragment">Evaluation suite with quality results</span>
-- <span class="fragment">Deployment and governance readiness pack</span>
+## Before the demo: identify your gap
 
-<span class="fragment">Breadth without evidence does not pass. Depth with evidence does.</span>
+**Think:** looking across everything you've built — what is the one boundary that you are least confident about?
 
----
+<!-- pause -->
 
-## Integration architecture checklist
+Not the thing you haven't finished. The thing you've built but aren't sure holds under pressure.
 
-- <span class="fragment">Controller, workflow, and gateway responsibilities are clear and documented</span>
-- <span class="fragment">Prompt and model versions are explicit and traceable per run</span>
-- <span class="fragment">Validation and fallback paths remain deterministic under failure</span>
-- <span class="fragment">UI states align with the backend status contract from Module 5</span>
+<!-- pause -->
 
-<span class="fragment">If any boundary is unclear, resolve it before the demo. Unclear boundaries are the most common integration failure.</span>
+*90 seconds — write it down.*
 
----
+<!-- pause -->
 
-## Evidence required for review
+That gap is what your demo should stress-test.
 
-| Evidence type | Example artefacts |
-| ------------- | ----------------- |
-| Architecture | Component flow diagram and boundary map |
+<!-- end_slide -->
+
+## What the demo must show
+
+Five things — all of them:
+
+<!-- pause -->
+
+1. One end-to-end request lifecycle — input to accepted output, with trace
+<!-- pause -->
+2. One failure path — show the fallback behaviour it triggers, not just that it exists
+<!-- pause -->
+3. Eval evidence — the release gate report supporting your go/no-go decision
+<!-- pause -->
+4. Trace evidence — a complete trace showing provenance fields
+<!-- pause -->
+5. The go/no-go recommendation — stated, with rationale, with a named owner
+
+<!-- pause -->
+
+> If you cannot show the failure path and the trace, the demo is incomplete.
+
+<!-- end_slide -->
+
+## What counts as evidence
+
+| Evidence type | Artefact |
+| ------------- | -------- |
+| Architecture | Boundary map — which layer owns what |
 | Quality | Eval pass/fail summary and dataset version |
-| Safety | Guardrail rule set and fallback examples |
-| Operations | Release gate checklist and rollback/fallback plan |
-| Observability | Trace samples with provenance fields |
+| Safety | Guardrail rule set with at least one denial example |
+| Operations | Release gate results and rollback trigger definition |
+| Observability | Trace sample with traceId, promptVersion, modelIdentifier |
 
-<span class="fragment">Verbal claims without artefacts are not accepted as evidence.</span>
+<!-- pause -->
 
----
+Verbal claims without artefacts are not accepted as evidence.
 
-## Review rubric
-
-- <span class="fragment">Correctness and schema reliability across test cases</span>
-- <span class="fragment">Safety and trust boundary handling under adversarial input</span>
-- <span class="fragment">UX clarity for uncertainty, evidence, and review flow</span>
-- <span class="fragment">Observability and deployment readiness with named ownership</span>
-
----
-
-## Demo expectations
-
-1. <span class="fragment">Show one end-to-end request lifecycle from input to accepted output.</span>
-2. <span class="fragment">Show one failure path and the fallback behaviour it triggers.</span>
-3. <span class="fragment">Show eval evidence used to support the release decision.</span>
-4. <span class="fragment">Show trace evidence for a completed request.</span>
-5. <span class="fragment">State the go/no-go recommendation and the rationale behind it.</span>
-
-<span class="fragment">If you cannot show the failure path and the trace, the demo is incomplete.</span>
-
----
+<!-- end_slide -->
 
 ## Common final-build failure modes
 
-- <span class="fragment">Feature works once but lacks repeatable evidence.</span>
-- <span class="fragment">Strong backend but unclear or inconsistent frontend review behaviour.</span>
-- <span class="fragment">Good eval scores but no operational rollout plan.</span>
-- <span class="fragment">Trace data present but not structured to support a release decision.</span>
+Knowing these before the demo is useful:
 
----
+<!-- pause -->
 
-## Team adoption planning
+- Feature works once but lacks repeatable eval evidence
+<!-- pause -->
+- Strong backend, inconsistent frontend review behaviour across the three status paths
+<!-- pause -->
+- Good eval scores but no named owner for the release gate
+<!-- pause -->
+- Trace data present but not structured to answer "why was this denied?"
 
-- <span class="fragment">What can become a shared platform default immediately?</span>
-- <span class="fragment">What needs one more sprint to harden before wider rollout?</span>
-- <span class="fragment">What risks require stakeholder alignment outside the team?</span>
-- <span class="fragment">Who owns ongoing quality and governance controls after this course?</span>
+<!-- pause -->
 
-<span class="fragment">Adoption planning is what turns training into production impact. Do not skip it.</span>
+**Think:** which of these is your build closest to?
 
----
+*Pair: 90 seconds — be honest.*
+
+<!-- end_slide -->
+
+## After the demo: adoption planning
+
+The demo proves the pattern works. Adoption planning is what turns it into production impact.
+
+<!-- pause -->
+
+Four questions — work through them as a team:
+
+<!-- pause -->
+
+1. What can become a shared platform default immediately — something every AI feature your team ships should use?
+<!-- pause -->
+2. What needs one more sprint to harden before wider rollout?
+<!-- pause -->
+3. What risks require stakeholder alignment outside the team?
+<!-- pause -->
+4. Who owns ongoing quality and governance controls after today?
+
+<!-- pause -->
+
+> Adoption planning is not optional. Without it, this course produces a prototype, not a capability.
+
+<!-- end_slide -->
 
 ## Course close
 
-- <span class="fragment">Reusable architecture patterns identified and documented</span>
-- <span class="fragment">Known next improvements prioritised with owners assigned</span>
-- <span class="fragment">Team adoption plan drafted and agreed</span>
+You leave with three things:
 
-<span class="fragment">You leave with a pattern set, not just a prototype. The patterns are the asset.</span>
+<!-- pause -->
 
----
+**A pattern set** — governed workflow, layered guardrails, structured UX, eval suite, release controls. These are reusable. Apply them to the next AI feature you ship.
 
-## Summary
+<!-- pause -->
 
-1. <span class="fragment">**Integration quality** is the real delivery test, not individual component completeness.</span>
-2. <span class="fragment">**Evidence beats opinion** for every release and governance decision.</span>
-3. <span class="fragment">**Governance patterns** built here are reusable team assets, not one-off course outputs.</span>
-4. <span class="fragment">**Adoption planning** turns training into production impact.</span>
+**A known gap list** — the things your current build doesn't cover yet. That list is your next sprint's input, not a sign of failure.
 
----
+<!-- pause -->
+
+**An adoption decision** — who owns what, and what changes next. If that decision isn't made in this room, it won't be made.
+
+<!-- pause -->
+
+> The patterns are the asset. Not the prototype.
+
+<!-- end_slide -->
 
 # Questions?
 

@@ -1,6 +1,6 @@
 {
   "manifestVersion": "1.0.0",
-  "generatedAt": "2026-05-25T05:48:40.798Z",
+  "generatedAt": "2026-05-25T05:51:40.328Z",
   "appVersion": "0.1.0",
   "prompt": {
     "name": "document-extraction",
@@ -8,9 +8,9 @@
   },
   "runtimeConfig": {
     "profile": "dev",
-    "llmMode": "mock",
+    "llmMode": "openai",
     "modelIdentifier": "gpt-4o-mini",
-    "confidenceThreshold": 0.8,
+    "confidenceThreshold": 0.85,
     "openAiBaseUrl": ""
   },
   "evalSet": {

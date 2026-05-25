@@ -2,209 +2,314 @@
 
 **Module 1 — Governed AI Feature Delivery**
 
----
+<!-- end_slide -->
 
-## The problem we're solving
+## Before we start
 
-AI features behave differently from traditional backend features.
+Six months ago your team shipped an AI feature to production.
 
-- <span class="fragment">Non-deterministic outputs and quality variance</span>
-- <span class="fragment">Model and prompt version drift over time</span>
-- <span class="fragment">Hidden risk (hallucination, PII, unsafe actions)</span>
-- <span class="fragment">Audit and governance expectations</span>
+<!-- pause -->
 
-<span class="fragment">Today: define a safe, reusable architecture.</span>
+Today an auditor calls. They want to know:
 
----
+<!-- pause -->
 
-## What "governed" means
+*"Why did the system deny this customer's application?"*
 
-- <span class="fragment">Traceable requests</span>
-- <span class="fragment">Versioned prompts and models</span>
-- <span class="fragment">Validation gates</span>
-- <span class="fragment">Clear responsibility boundaries</span>
-- <span class="fragment">Repeatable evaluation and release criteria</span>
+<!-- pause -->
 
----
+**What can you show them?**
 
-## Why this matters now
+<!-- pause -->
 
-- <span class="fragment">AI is already in production paths, internal and client-facing.</span>
-- <span class="fragment">Teams need standards, not one-off implementations.</span>
-- <span class="fragment">Governance has to be built into delivery, not added later.</span>
-- <span class="fragment">Reusable patterns reduce risk and speed up future features.</span>
+Take 60 seconds. Think about what evidence you'd have — or wouldn't.
 
----
+<!-- end_slide -->
 
-## Traditional vs AI Feature: Output Behavior
+## The gap we're closing
 
-| Traditional feature | AI feature               |
-| ------------------- | ------------------------ |
-| Deterministic      | Probabilistic / variable |
+Most teams can answer that question for a traditional feature.
 
-<span class="fragment">Traditional: Same input always gives the same output.</span>  
-<span class="fragment">AI: Output can vary with each request, even for identical input.</span>  
-<span class="fragment">This uncertainty impacts testability, reliability, and user trust.</span>
+<!-- pause -->
 
----
+Very few can answer it confidently for an AI feature.
 
-## Traditional vs AI Feature: Testing Approach
+<!-- pause -->
 
-| Traditional feature                 | AI feature                                 |
-| ------------------------------------ | ------------------------------------------- |
-| Unit/integration mostly enough      | Needs eval datasets + quality thresholds   |
+That gap is what this course is about.
 
-<span class="fragment">Traditional: Unit and integration tests are typically sufficient.</span>  
-<span class="fragment">AI: Requires realistic evaluation datasets and measurable quality targets.</span>  
-<span class="fragment">Success is about overall averages, not just pass/fail per case.</span>
+<!-- end_slide -->
 
----
+## Why AI features are different: let's find out
 
-## Traditional vs AI Feature: Change Risk
+You're building a feature that classifies customer documents.
 
-| Traditional feature     | AI feature                             |
-| ----------------------- | --------------------------------------- |
-| Mostly code changes    | Code + prompt + model + data drift     |
+A traditional version: rule-based, deterministic.
+An AI version: LLM-powered, probabilistic.
 
-<span class="fragment">Traditional: Most risk comes from code changes and deployments.</span>  
-<span class="fragment">AI: Risk sources include prompt edits, new model versions, and data shifts.</span>  
-<span class="fragment">Change and drift can happen outside of mainline code, requiring new controls.</span>
+<!-- pause -->
 
----
+**Think:** what changes about how you test, deploy, and audit it?
 
-## Traditional vs AI Feature: Observability Need
+*60 seconds — then we'll compare notes.*
 
-| Traditional feature   | AI feature                                  |
-| --------------------- | -------------------------------------------- |
-| Logs and metrics     | Logs, traces, prompt/model provenance        |
+<!-- end_slide -->
 
-<span class="fragment">Traditional: Basic logs and service metrics usually suffice for diagnosis.</span>  
-<span class="fragment">AI: Also must record which prompt and which model generated each output.</span>  
-<span class="fragment">This provenance is key for debugging, trust, and regulatory reviews.</span>
+## What actually changes
 
----
+| Area | Traditional feature | AI feature |
+| ---- | ------------------- | ---------- |
+| Output | Deterministic | Probabilistic / variable |
+| Testing | Unit/integration mostly enough | Needs eval datasets + quality thresholds |
+| Change risk | Mostly code changes | Code + prompt + model + data drift |
+| Observability | Logs and metrics | Logs, traces, prompt/model provenance |
 
-<blockquote><b>Key point:</b> AI features require a broader and deeper engineering contract.</blockquote>
+<!-- pause -->
 
-<span class="fragment">Same engineering discipline — expanded control surface.</span>
+How close were you?
 
----
+<!-- end_slide -->
 
-## The AI request lifecycle
+## The provenance problem
 
-1. <span class="fragment">User or system submits input.</span>
-2. <span class="fragment">Backend workflow prepares context and policy constraints.</span>
-3. <span class="fragment">Gateway routes model call and records trace metadata.</span>
-4. <span class="fragment">Model returns structured/unstructured response.</span>
-5. <span class="fragment">Post-call validation and safety checks run.</span>
-6. <span class="fragment">Frontend presents result with confidence/review affordances.</span>
+Traditional: *same input → same output, always.*
 
----
+<!-- pause -->
 
-## Architecture boundaries (course stack)
+AI: output can vary with each request, even for identical input.
 
-- <span class="fragment">**TanStack frontend**: interaction, review, uncertainty display</span>
-- <span class="fragment">**NestJS backend**: orchestration, policy, deterministic workflow steps</span>
-- <span class="fragment">**LLM gateway**: routing, traceability, auditability controls</span>
-- <span class="fragment">**Model provider**: inference capability, latency/cost trade-offs</span>
-- <span class="fragment">**Evaluation layer**: quality checks and regression detection</span>
+<!-- pause -->
 
----
+And the things that change output aren't always in your codebase.
+
+<!-- pause -->
+
+- Someone edits a prompt.
+- A model provider silently updates a version.
+- Input data distribution shifts.
+
+<!-- pause -->
+
+None of these show up in your deployment pipeline.
+
+<!-- end_slide -->
+
+> **Key point:** AI features require a broader and deeper engineering contract.
+
+<!-- pause -->
+
+Same engineering discipline — expanded control surface.
+
+<!-- end_slide -->
+
+## Where should the rules live?
+
+Look at these four options:
+
+- Backend code
+- Prompt text
+- Config / feature flags
+- Infrastructure
+
+<!-- pause -->
+
+**Think:** where would you put each of these?
+
+- Allowed document types
+- Confidence threshold for routing
+- Which model to use
+- Fallback strategy if the model is unavailable
+- Regional routing requirement (EU vs US)
+
+*90 seconds — we'll compare in a moment.*
+
+<!-- end_slide -->
 
 ## Where logic should live
 
-| Put it in...          | Typical responsibilities                                  | Example                                   |
-| --------------------- | --------------------------------------------------------- | ----------------------------------------- |
-| Backend code          | Workflow sequence, retries, policy branching              | Retry if confidence score below threshold |
-| Prompt assets in code | Task instructions, output format constraints              | Extraction schema and field definitions   |
-| Config                | Model selection, thresholds, feature flags                | Model name, confidence threshold, region  |
-| Infrastructure        | Deployment policy, secrets, regional routing, monitoring  | EU/US routing rules, secrets management   |
+| Put it in... | Typical responsibilities | Example |
+| ------------ | ------------------------ | ------- |
+| Backend code | Workflow sequence, retries, policy branching | Retry if confidence score below threshold |
+| Prompt assets in code | Task instructions, output format constraints | Extraction schema and field definitions |
+| Config | Model selection, thresholds, feature flags | Model name, confidence threshold, region |
+| Infrastructure | Deployment policy, secrets, regional routing | EU/US routing rules, secrets management |
 
----
+<!-- pause -->
 
-<blockquote>Rule: avoid hiding business rules inside prompts only.</blockquote>
+> Rule: never hide a business rule inside prompt text only.
 
----
+<!-- pause -->
 
-## Risk categories to design for
+If it can't be tested, reviewed, or versioned — it's a governance gap.
 
-- <span class="fragment">**Hallucination**: plausible but incorrect output</span>
-- <span class="fragment">**Data exposure**: leakage of PII or sensitive context</span>
-- <span class="fragment">**Trace gaps**: no explainable path from input to decision</span>
-- <span class="fragment">**Operational drift**: prompt/model changes with no controls</span>
+<!-- end_slide -->
 
----
+## The AI request lifecycle
 
-## Regulated environment expectations
+A governed request isn't just a call to an API.
 
-- <span class="fragment">You need evidence for how decisions were produced.</span>
-- <span class="fragment">You need repeatable release criteria, not judgment calls.</span>
-- <span class="fragment">You need clear controls for fallback and rollback.</span>
-- <span class="fragment">You need region-aware operations where required (for example EU/US).</span>
+<!-- pause -->
 
----
+1. User or system submits input.
+<!-- pause -->
+2. Backend workflow prepares context and applies policy constraints.
+<!-- pause -->
+3. Gateway routes the model call and records trace metadata.
+<!-- pause -->
+4. Model returns structured or unstructured response.
+<!-- pause -->
+5. Post-call validation and safety checks run.
+<!-- pause -->
+6. Frontend presents result with confidence and review affordances.
 
-## Governance is not "slow"
+<!-- pause -->
 
-**Common fear:** "Governance will slow us down."
+Each step is a control point. Each control point needs evidence.
 
-- <span class="fragment">Without standards: every feature reinvents controls.</span>
-- <span class="fragment">With standards: teams ship faster using reusable modules.</span>
-- <span class="fragment">Auditability and safety become defaults, not special projects.</span>
+<!-- end_slide -->
 
-<span class="fragment">Governance done well is a delivery accelerator.</span>
+## Architecture boundaries
 
----
+For this course, we're working across four layers:
 
-## Core scenario for this course
+<!-- pause -->
 
-Build an AI-powered document-processing feature that:
+- **TanStack frontend**: interaction, review, uncertainty display
+<!-- pause -->
+- **NestJS backend**: orchestration, policy, deterministic workflow steps
+<!-- pause -->
+- **LLM gateway**: routing, traceability, auditability controls
+<!-- pause -->
+- **Model provider**: inference capability, latency/cost trade-offs
+<!-- pause -->
+- **Evaluation layer**: quality checks and regression detection
 
-- <span class="fragment">Accepts document/text input</span>
-- <span class="fragment">Extracts structured information</span>
-- <span class="fragment">Classifies/routes results</span>
-- <span class="fragment">Applies validation and guardrails</span>
-- <span class="fragment">Surfaces outputs in a reviewable UI</span>
+<!-- pause -->
 
-<span class="fragment">This scenario was chosen deliberately: it combines extraction, classification, validation, and review — touching every layer of the governed architecture.</span>
+You need to know which layer owns which responsibility — and be able to defend it.
 
-<span class="fragment">The same feature thread runs through all eight modules.</span>
+<!-- end_slide -->
 
----
+## Risk categories you're designing for
 
-## What we deliver by the end of Module 1
+<!-- pause -->
 
-- <span class="fragment">Shared architecture diagram</span>
-- <span class="fragment">Agreed request lifecycle and control points</span>
-- <span class="fragment">Initial definition of "governed" for this organisation</span>
-- <span class="fragment">A baseline pattern to reuse in modules 2–8</span>
+- **Hallucination**: plausible but incorrect output
+<!-- pause -->
+- **Data exposure**: leakage of PII or sensitive context
+<!-- pause -->
+- **Trace gaps**: no explainable path from input to decision
+<!-- pause -->
+- **Operational drift**: prompt or model changes with no controls
 
----
+<!-- pause -->
+
+**Which of these keeps you up at night for your current context?**
+
+<!-- end_slide -->
+
+## "Governance will slow us down"
+
+You've heard this. You may have said it.
+
+<!-- pause -->
+
+Here's what ungoverned delivery actually looks like at scale:
+
+<!-- pause -->
+
+- Every team reinvents the same controls independently.
+<!-- pause -->
+- Incidents take days to diagnose because provenance is missing.
+<!-- pause -->
+- Audits require manual reconstruction of decisions.
+<!-- pause -->
+- New features can't reuse anything because nothing is standardised.
+
+<!-- pause -->
+
+Governance done well is a delivery accelerator — reusable modules, shared standards, faster shipping.
+
+<!-- end_slide -->
+
+## The scenario we'll use throughout this course
+
+An AI-powered document intake feature in a regulated environment.
+
+It needs to:
+
+<!-- pause -->
+
+- Accept document or text input
+<!-- pause -->
+- Extract structured information
+<!-- pause -->
+- Classify and route results
+<!-- pause -->
+- Apply validation and guardrails
+<!-- pause -->
+- Surface outputs in a reviewable UI
+
+<!-- pause -->
+
+This scenario touches every layer of the governed architecture. The same feature thread runs through all eight modules.
+
+<!-- end_slide -->
+
+## What you'll build a view on in the lab
+
+Before Module 2 implementation, you need to make decisions:
+
+<!-- pause -->
+
+- Which control points are sufficient as-is?
+<!-- pause -->
+- What evidence must exist for every request?
+<!-- pause -->
+- Where do specific rules live — and why?
+<!-- pause -->
+- What happens when you change one parameter?
+
+<!-- pause -->
+
+The lab produces a one-page governance design brief you'll carry forward.
+
+<!-- end_slide -->
 
 ## Summary
 
-1. <span class="fragment">**AI features are different**: they need broader engineering controls.</span>
-2. <span class="fragment">**Governed delivery is practical**: boundaries, traceability, validation.</span>
-3. <span class="fragment">**Architecture matters early**: where logic lives determines risk.</span>
-4. <span class="fragment">**This is the foundation** for workflows, guardrails, UX, evals, and deployment.</span>
+- **AI features are different**: broader engineering controls are required.
+<!-- pause -->
+- **Governed delivery is practical**: boundaries, traceability, validation.
+<!-- pause -->
+- **Architecture matters early**: where logic lives determines risk.
+<!-- pause -->
+- **This is the foundation** for workflows, guardrails, UX, evals, and deployment.
 
----
+<!-- end_slide -->
 
 ## Bridge to Module 2
 
-**What we've learned:**
+**What we've established:**
 
-- <span class="fragment">Where responsibilities should sit across the stack.</span>
-- <span class="fragment">Which risks and controls must be explicit from day one.</span>
+- Where responsibilities sit across the stack.
+<!-- pause -->
+- Which risks and controls must be explicit from day one.
+<!-- pause -->
 
 **What's next:**
 
-- <span class="fragment">Implement the backend workflow pattern in NestJS.</span>
-- <span class="fragment">Your first task: build the NestJS service skeleton that owns the orchestration boundary. You already know what it's responsible for — now you'll build it.</span>
+In the lab you'll make governance decisions for the document intake scenario.
 
-<span class="fragment">Module 2 turns this architecture into reusable implementation structure.</span>
+<!-- pause -->
 
----
+In Module 2 you'll translate those decisions into a concrete NestJS workflow boundary, validation sequence, and trace contract.
+
+<!-- pause -->
+
+*Your decisions in the lab shape what you build in Module 2.*
+
+<!-- end_slide -->
 
 # Questions?
 

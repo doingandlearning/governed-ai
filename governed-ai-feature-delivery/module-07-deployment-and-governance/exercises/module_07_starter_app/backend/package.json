@@ -9,7 +9,8 @@
     "dev": "node --env-file=.env --watch --require ts-node/register src/main.nest.ts",
     "test": "vitest run",
     "test:watch": "vitest --watch",
-    "generate-manifest": "npx tsx --env-file=.env src/evals/generateVersionBundleManifest.ts"
+    "generate-manifest": "npx tsx --env-file=.env src/evals/generateVersionBundleManifest.ts",
+    "generate-release-gate-report": "npx tsx --env-file=.env src/evals/generateReleaseGateReport.ts"
   },
   "devDependencies": {
     "@types/node": "^24.9.1",

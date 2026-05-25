@@ -1,19 +1,20 @@
 {
-  "runAt": "2026-05-25T05:43:45.663Z",
+  "runAt": "2026-05-25T05:51:50.846Z",
   "total": 6,
-  "passed": 3,
-  "failed": 3,
-  "passRate": 0.5,
+  "passed": 2,
+  "failed": 4,
+  "passRate": 0.3333,
   "results": [
     {
       "id": "accepted_happy_path",
       "description": "Normal invoice extraction succeeds",
-      "passed": true,
+      "passed": false,
       "expected": {
         "status": "accepted"
       },
       "actual": {
-        "status": "accepted",
+        "status": "needs_review",
+        "reason": "low_confidence",
         "traceCompleteness": {
           "traceId": true,
           "promptVersion": true,
@@ -88,7 +89,8 @@
         "reason": "policy_sensitive_output"
       },
       "actual": {
-        "status": "accepted",
+        "status": "needs_review",
+        "reason": "low_confidence",
         "traceCompleteness": {
           "traceId": true,
           "promptVersion": true,

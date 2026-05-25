@@ -2,35 +2,27 @@
 
 **Module 2 — Governed AI Feature Delivery**
 
----
+<!-- end_slide -->
 
-## The problem we're solving
+## Where we left off
 
-LLM calls scattered across controllers quickly become unmaintainable.
+In Module 1 you made governance decisions for the document intake scenario.
 
-- <span class="fragment">Unclear ownership of prompt logic</span>
-- <span class="fragment">Inconsistent validation</span>
-- <span class="fragment">Difficult testing and reuse</span>
-- <span class="fragment">Weak audit trails</span>
+<!-- pause -->
 
-<span class="fragment">Now: design a layered, reusable backend workflow.</span>
+You decided where rules should live, what evidence every request needs, and what happens when something fails.
 
----
+<!-- pause -->
 
-## What "good" looks like in this module
+Module 2 is where those decisions become structure.
 
-- <span class="fragment">Deterministic orchestration around model calls</span>
-- <span class="fragment">Prompt assets in code with version labels</span>
-- <span class="fragment">Pre-call and post-call validation gates</span>
-- <span class="fragment">Gateway-mediated calls with trace metadata</span>
-- <span class="fragment">Safe fallback path when validation fails</span>
+<!-- end_slide -->
 
----
+## Before we look at the solution
 
-## Anti-pattern to avoid
+Here is the simplest possible implementation of the feature:
 
-```ts
-// Controller calls model directly — no contract boundary
+```typescript
 @Post("/extract")
 async extract(@Body() body: any) {
   const result = await this.llm.invoke(body.text);
@@ -38,72 +30,124 @@ async extract(@Body() body: any) {
 }
 ```
 
-- <span class="fragment">No input validation contract</span>
-- <span class="fragment">No prompt version tracking</span>
-- <span class="fragment">No output schema enforcement</span>
-- <span class="fragment">No trace or audit metadata</span>
+<!-- pause -->
 
----
+**Think:** using your governance brief from Module 1 — what's missing here?
 
-## Workflow layering in practice
+*60 seconds. Then we'll compare.*
 
-- <span class="fragment">**Controller**: request/response contract only</span>
-- <span class="fragment">**Workflow service**: orchestration and decisions</span>
-- <span class="fragment">**Prompt module**: versioned prompt assets</span>
-- <span class="fragment">**Validators**: pre/post-call checks</span>
-- <span class="fragment">**Gateway adapter**: model access and tracing</span>
+<!-- end_slide -->
 
----
+## What's missing
 
-## Layer responsibilities: Controller and Workflow service
+- No input validation contract
+<!-- pause -->
+- No prompt version tracking
+<!-- pause -->
+- No output schema enforcement
+<!-- pause -->
+- No trace or audit metadata
+<!-- pause -->
+- No fallback path
+
+<!-- pause -->
+
+Every gap here maps directly to a governance requirement you identified in the lab.
+
+<!-- pause -->
+
+The question isn't *whether* to fix this — it's *how to structure the fix.*
+
+<!-- end_slide -->
+
+## The layering question
+
+We need to add: validation, prompt management, tracing, fallback handling.
+
+<!-- pause -->
+
+**Think:** where would you put each of those? What are your options?
+
+*90 seconds — then pairs.*
+
+<!-- pause -->
+
+*Share: what did you disagree on?*
+
+<!-- end_slide -->
+
+## The pattern: workflow layering
+
+- **Controller**: request/response contract only
+<!-- pause -->
+- **Workflow service**: orchestration, decisions, fallback
+<!-- pause -->
+- **Prompt module**: versioned prompt assets
+<!-- pause -->
+- **Validators**: pre and post-call checks
+<!-- pause -->
+- **Gateway adapter**: model access, tracing, audit envelope
+
+<!-- pause -->
+
+Each layer has one job. Let's look at what that means in practice.
+
+<!-- end_slide -->
+
+## Demo: the anti-pattern vs the pattern
+
+*[Show demo app — walk the anti-pattern path first, then the governed path.]*
+
+*Points to land during the demo:*
+- *Where the controller boundary sits*
+- *How the workflow service owns the sequence*
+- *Where the prompt version appears in the trace*
+- *What a post-call validation failure looks like*
+- *What the fallback response looks like vs a raw model error*
+
+<!-- end_slide -->
+
+## After the demo: layer ownership
 
 | Layer | Owns | Avoids |
 | ----- | ---- | ------ |
-| Controller | Transport contract, auth context | Orchestration and prompt logic |
+| Controller | Transport contract, auth context | Orchestration, prompt logic |
 | Workflow service | Sequence, branching, retries, fallback | HTTP transport concerns |
-
----
-
-## Layer responsibilities: Prompt module and Validators
-
-| Layer | Owns | Avoids |
-| ----- | ---- | ------ |
-| Prompt module | Task instructions, placeholders, version id | Business policy and branching |
+| Prompt module | Task instructions, placeholders, version id | Business policy, branching |
 | Validators | Schema and policy checks | Model invocation |
-
----
-
-## Layer responsibilities: Gateway adapter
-
-| Layer | Owns | Avoids |
-| ----- | ---- | ------ |
 | Gateway adapter | Model routing, trace metadata, audit envelope | Domain decision logic |
 
-<span class="fragment">Each layer has one job. Mixing them is where maintainability breaks down.</span>
+<!-- pause -->
 
----
+**Which of these boundaries did the demo make clearest? Which is still fuzzy?**
 
-## Request flow (module 2 implementation path)
+<!-- end_slide -->
 
-1. <span class="fragment">Validate incoming request schema in controller.</span>
-2. <span class="fragment">Workflow builds prompt variables and context.</span>
-3. <span class="fragment">Gateway call includes trace id and prompt version.</span>
-4. <span class="fragment">Model output is parsed into expected schema.</span>
-5. <span class="fragment">Post-call validator enforces schema and policy.</span>
-6. <span class="fragment">Return accepted output or safe fallback response.</span>
+## Prompt assets are code
 
----
+This is the one that teams skip most often.
 
-## Prompt assets in code
+<!-- pause -->
 
-- <span class="fragment">Store prompt templates as code artefacts, not hidden strings.</span>
-- <span class="fragment">Attach version metadata for comparison and rollback.</span>
-- <span class="fragment">Parameterise fields explicitly — no implicit mutation.</span>
-- <span class="fragment">Review prompt changes like behaviour changes: diff, approve, merge.</span>
+- Store prompt templates as code artefacts, not hidden strings.
+<!-- pause -->
+- Attach version metadata — you need this for audit and rollback.
+<!-- pause -->
+- Parameterise fields explicitly. No implicit mutation.
+<!-- pause -->
+- Review prompt changes like behaviour changes: diff, approve, merge.
 
----
+<!-- pause -->
 
-## Structured output contract
+> A prompt edit that bypasses review is a behaviour change that bypasses review.
+
+<!-- end_slide -->
+
+## The output contract
+
+Model output is untrusted until it passes validation.
+
+<!-- pause -->
 
 | Field | Type | Rule |
 | ----- | ---- | ---- |
@@ -112,106 +156,148 @@ async extract(@Body() body: any) {
 | `entities` | array | Required, max length policy-constrained |
 | `summary` | string | Optional, length-limited |
 
----
+<!-- pause -->
 
-<blockquote>Contract first: model output must conform before use.</blockquote>
+**Think:** what happens if `confidence` comes back as `null`? Who should handle that — and where?
 
----
+<!-- end_slide -->
 
-## Validation gates: pre-call
+## Validation gates
 
-Checks that run **before** the model is invoked:
+**Pre-call** — before the model is invoked:
 
-- <span class="fragment">Input shape and required fields</span>
-- <span class="fragment">Size and type constraints</span>
-- <span class="fragment">Policy constraints (allowed routes, feature flags)</span>
+- Input shape and required fields
+- Size and type constraints
+- Policy constraints (allowed routes, feature flags)
 
-<span class="fragment">Failing here is cheap. Failing after a model call is not.</span>
+<!-- pause -->
 
----
+**Post-call** — after the model responds:
 
-## Validation gates: post-call
+- Schema and parse validity
+- Policy checks (allowed categories, content rules)
+- Confidence threshold — trigger fallback if below minimum
 
-Checks that run **after** the model responds:
+<!-- pause -->
 
-- <span class="fragment">Schema and parse validity</span>
-- <span class="fragment">Policy checks (allowed categories, content rules)</span>
-- <span class="fragment">Confidence threshold — trigger fallback if below minimum</span>
+Failing pre-call is cheap. Failing post-call is recoverable. Skipping both is a production incident.
 
-<span class="fragment">Model output is untrusted until it passes post-call validation.</span>
+<!-- end_slide -->
 
----
-
-## Gateway integration goals
-
-- <span class="fragment">Consistent model invocation contract across features</span>
-- <span class="fragment">Prompt and model provenance recorded in trace metadata</span>
-- <span class="fragment">Central routing and provider abstraction</span>
-- <span class="fragment">Audit-ready request/response envelope</span>
-
-<span class="fragment">The gateway is a governance control point, not just a transport wrapper.</span>
-
----
-
-## Failure and fallback design
+## Failure is part of the design
 
 **When validation fails:**
 
-- <span class="fragment">Do not return raw model output.</span>
-- <span class="fragment">Return a deterministic "needs review" response.</span>
-- <span class="fragment">Persist trace and failure reason for follow-up.</span>
-- <span class="fragment">Maintain a UI-safe output contract at all times.</span>
+<!-- pause -->
 
-<span class="fragment">Safe fallback is intentional design — not a sign the feature failed.</span>
+- Do not return raw model output.
+<!-- pause -->
+- Return a deterministic `needs_review` response.
+<!-- pause -->
+- Persist trace and failure reason for follow-up.
+<!-- pause -->
+- Maintain a UI-safe output contract at all times.
 
----
+<!-- pause -->
 
-## Testing strategy for workflow modules
+Safe fallback isn't a sign the feature failed. It's the feature working as designed.
 
-- <span class="fragment">**Unit tests**: orchestration branches and decision logic</span>
-- <span class="fragment">**Contract tests**: request/response schema conformance</span>
-- <span class="fragment">**Validation tests**: rejection and fallback paths</span>
-- <span class="fragment">**Integration tests**: gateway adapter stub with trace verification</span>
+<!-- end_slide -->
 
----
+## The gateway as a governance control
 
-## Module 2 lab build target
+Teams often treat the gateway as a transport wrapper. It isn't.
 
-You will implement a NestJS endpoint that:
+<!-- pause -->
 
-- <span class="fragment">Accepts document input via a validated controller contract</span>
-- <span class="fragment">Runs deterministic workflow orchestration in a service layer</span>
-- <span class="fragment">Calls the model via gateway with trace metadata and prompt version</span>
-- <span class="fragment">Enforces post-call schema and policy checks</span>
-- <span class="fragment">Returns an accepted output or a safe fallback response</span>
+- Consistent model invocation contract across all features
+<!-- pause -->
+- Prompt and model provenance recorded in every trace
+<!-- pause -->
+- Central routing and provider abstraction
+<!-- pause -->
+- Audit-ready request/response envelope
 
-<span class="fragment">Definition of done: each layer has a clear boundary and the fallback path is tested.</span>
+<!-- pause -->
 
----
+If the gateway doesn't record which prompt version produced this output, your audit contract has a gap.
+
+<!-- end_slide -->
+
+## Testing the workflow
+
+| Test type | What it covers |
+| --------- | -------------- |
+| Unit | Orchestration branches, decision logic |
+| Contract | Request/response schema conformance |
+| Validation | Rejection paths and fallback behaviour |
+| Integration | Gateway adapter stub with trace verification |
+
+<!-- pause -->
+
+**The fallback path must be tested.** If you've only tested the happy path, you haven't tested the governance.
+
+<!-- end_slide -->
+
+## What you're building in the lab
+
+A NestJS endpoint that:
+
+- Accepts document input via a validated controller contract
+<!-- pause -->
+- Runs deterministic workflow orchestration in a service layer
+<!-- pause -->
+- Calls the model via gateway with trace metadata and prompt version
+<!-- pause -->
+- Enforces post-call schema and policy checks
+<!-- pause -->
+- Returns an accepted output or a safe fallback response
+
+<!-- pause -->
+
+**Definition of done:** each layer has a clear boundary and the fallback path is tested.
+
+<!-- end_slide -->
 
 ## Summary
 
-1. <span class="fragment">**Structure beats ad-hoc calls** for reliability and reuse.</span>
-2. <span class="fragment">**Prompts are code artefacts** and must be versioned and reviewed.</span>
-3. <span class="fragment">**Validation gates are mandatory** — pre-call and post-call.</span>
-4. <span class="fragment">**Gateway integration** enables auditability and trace consistency.</span>
+- **Structure beats ad-hoc calls** — reliability, reuse, and auditability require it.
+<!-- pause -->
+- **Prompts are code artefacts** — version them, review them, treat changes as behaviour changes.
+<!-- pause -->
+- **Validation gates are mandatory** — pre-call and post-call, every time.
+<!-- pause -->
+- **Gateway integration** enables consistent traceability across features.
+<!-- pause -->
+- **Fallback is intentional design** — not an edge case.
 
----
+<!-- end_slide -->
 
 ## Bridge to Module 3
 
-**What we've built:**
+**What you've built:**
 
-- <span class="fragment">A deterministic, traceable workflow pattern you can reuse across features.</span>
+A deterministic, traceable workflow pattern you can reuse across features.
 
-**What's next:**
+<!-- pause -->
 
-- <span class="fragment">Decide when deterministic workflows are the right tool — and when they aren't.</span>
-- <span class="fragment">Your first task in Module 3: map your workflow against the agent decision framework.</span>
+**The question Module 3 asks:**
 
-<span class="fragment">Module 3 covers workflow vs agent design: predictability, tool usage, and where agentic behaviour is appropriate.</span>
+When is a deterministic workflow the right tool — and when isn't it?
 
----
+<!-- pause -->
+
+- Where does a fixed sequence break down?
+<!-- pause -->
+- When does agentic behaviour become appropriate?
+<!-- pause -->
+- What new governance challenges does that introduce?
+
+<!-- pause -->
+
+*Your first task in Module 3: map your workflow against the agent decision framework.*
+
+<!-- end_slide -->
 
 # Questions?
 

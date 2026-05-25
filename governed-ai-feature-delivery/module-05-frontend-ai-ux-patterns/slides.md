@@ -2,186 +2,242 @@
 
 **Module 5 — Governed AI Feature Delivery**
 
----
+<!-- end_slide -->
 
-## The problem we're solving
+## Where we left off
 
-Chat-style output alone is often unclear and hard to verify.
+Your backend now produces three clearly-distinguished outcomes:
 
-- <span class="fragment">Unclear confidence and uncertainty</span>
-- <span class="fragment">Weak evidence visibility</span>
-- <span class="fragment">Poor review workflow for structured data</span>
-- <span class="fragment">Risky direct action on unverified output</span>
+- `accepted` — output passed all checks, ready for display
+- `needs_review` — uncertain or policy-sensitive, requires human action
+- `denied` — hostile input or policy breach, should not proceed
 
-<span class="fragment">Now: build structured, reviewable AI UX patterns.</span>
+<!-- pause -->
 
----
+**Think:** for each of those three outcomes — what should a user see? What should they be able to do?
 
-## Why this matters in product delivery
+*60 seconds — write it down before we look at the app.*
 
-- <span class="fragment">Users act on what the UI communicates, not on backend intent.</span>
-- <span class="fragment">Unsafe UX can bypass otherwise strong backend controls.</span>
-- <span class="fragment">Trust comes from clarity, not from polished visual design alone.</span>
-- <span class="fragment">Frontend standards are needed for consistency across teams and features.</span>
+<!-- end_slide -->
 
-<span class="fragment">The frontend is a control layer. Design it like one.</span>
+## The frontend is a control layer
 
----
+Users act on what the UI communicates — not on backend intent.
 
-## UI patterns that work
+<!-- pause -->
 
-- <span class="fragment">Structured result cards over raw text blocks</span>
-- <span class="fragment">Confidence and evidence cues shown in context</span>
-- <span class="fragment">Editable review step before commit</span>
-- <span class="fragment">Streaming states with clear progression</span>
+A strong backend with a weak frontend is still a governance failure.
 
----
+<!-- pause -->
 
-## Chat-first vs task-first UX
+- A `needs_review` response is only useful if the UI makes the next step obvious.
+- A `denied` response is only acceptable if the user understands why.
+- An `accepted` response with no confidence signal puts all trust in the model.
 
-| Approach | Strength | Risk |
-| -------- | -------- | ---- |
-| Chat-first UI | Fast prototyping | Weak structure, poor verification |
-| Task-first structured UI | Clear review and control | More upfront design effort |
+<!-- pause -->
 
-<span class="fragment">For governed features, task-first usually wins.</span>
-<span class="fragment">The design effort pays back in auditability and user confidence.</span>
+> The frontend doesn't just display results. It shapes the decisions users make about them.
 
----
+<!-- end_slide -->
 
-## Structured output presentation
+## The state model
 
-- <span class="fragment">Display typed fields, not paragraphs of generated text.</span>
-- <span class="fragment">Separate extracted data from explanatory or supporting notes.</span>
-- <span class="fragment">Show status per field: accepted, uncertain, or missing.</span>
-- <span class="fragment">Keep the frontend response shape aligned to the backend contract.</span>
+Your UI has more states than your backend.
 
----
+<!-- pause -->
 
->If the UI contract diverges from the backend contract, both become harder to govern.
+Backend produces: `accepted`, `needs_review`, `denied`
 
----
+UI also needs: `idle`, `loading`, `error`, `partial`
 
-## Confidence and uncertainty design
+<!-- pause -->
 
-- <span class="fragment">Confidence is a signal, not a guarantee.</span>
-- <span class="fragment">Use bands (high / medium / low) with explicit, documented meaning.</span>
-- <span class="fragment">Highlight uncertain fields so reviewers know where to focus.</span>
-- <span class="fragment">Do not hide ambiguity to make the UI look cleaner.</span>
+> Undefined states become support tickets.
 
-<span class="fragment">Hiding uncertainty does not remove it. It just removes the reviewer's ability to act on it.</span>
+<!-- end_slide -->
 
----
+## State model
 
-## Evidence and explanation patterns
+![State model](ui_state_model.png)
 
-- <span class="fragment">Show a supporting source snippet or reference where possible.</span>
-- <span class="fragment">Provide concise "why this result" text for key fields.</span>
-- <span class="fragment">Link to trace id or audit detail for users who need it.</span>
-- <span class="fragment">Do not expose internal prompt text or policy internals.</span>
+<!-- end_slide -->
 
----
+## State machine
 
-## Review-before-commit flow
+![State machine](ui_state_machine.png)
 
-1. <span class="fragment">Render model output in an editable structured form.</span>
-2. <span class="fragment">Highlight uncertain or policy-sensitive fields clearly.</span>
-3. <span class="fragment">Require explicit confirmation before any high-impact action.</span>
-4. <span class="fragment">Persist the reviewed state and decision metadata for audit.</span>
+<!-- end_slide -->
 
-<span class="fragment">The user's confirmation is part of the audit trail, not just the UX.</span>
+## State model walkthrough
 
----
+*[Open the frontend app. Point at the transition telemetry panel at the bottom.]*
 
-## Redaction and safe display
+*[Submit a request and watch the state transitions appear in real time: `idle → loading → accepted`]*
 
-- <span class="fragment">Mask sensitive fields by default where required by policy.</span>
-- <span class="fragment">Control field visibility by role and permission level.</span>
-- <span class="fragment">Prevent accidental copy or export of protected data.</span>
-- <span class="fragment">Apply redaction behaviour consistently across all components, not per screen.</span>
+*[Then ask:]*
 
----
+> "The telemetry panel records every state change with a timestamp. Where does that data go in a production system — and why does it matter for audit?"
 
-## Streaming UX with SSE
+<!-- pause -->
 
-- <span class="fragment">Use deterministic state stages: queued, processing, partial, complete.</span>
-- <span class="fragment">Render partial updates without layout shift.</span>
-- <span class="fragment">Handle stream interruption with a clear fallback state.</span>
-- <span class="fragment">Never present partial output as final output.</span>
+**Think:** would a chat interface produce this kind of traceable state record? What would you lose?
 
----
+*Pair: 90 seconds.*
 
-## State model for reliable UX
+<!-- end_slide -->
 
-![alt text](ui_state_model.svg)
+## Demo: the accepted path
 
+*[Load the "Pass sample: invoice" input. Submit. Show the accepted result panel.]*
 
----
+*Points to land:*
+- *Typed fields — not a paragraph of generated text*
+- *Confidence shown as a raw number — pause here*
+- *Trace ID visible — provenance in the UI*
+- *No one-click action — result displayed, not committed*
 
-![alt text](ui_state_machine.svg)
+<!-- pause -->
 
----
+**Ask:** `0.95` — is that enough for a reviewer to act on? What about `0.87`? What about `0.80`?
 
->Every state must have a defined user action. Undefined states become support tickets.
+<!-- pause -->
 
----
+Confidence needs bands with documented meaning — not a raw float. `0.95` should read *"high: proceed with standard review"*, not just `0.95`.
 
-## What to avoid
+<!-- pause -->
 
-- <span class="fragment">One-click actions on unreviewed model output</span>
-- <span class="fragment">A single confidence number with no context or band definition</span>
-- <span class="fragment">Inconsistent fallback behaviour between screens</span>
-- <span class="fragment">UI state contracts that diverge from backend response statuses</span>
+> Hiding uncertainty does not remove it. It removes the reviewer's ability to act on it.
 
----
+<!-- end_slide -->
 
-## UX test scenarios
+## Demo: the needs_review path
 
-1. <span class="fragment">High confidence output with valid supporting evidence.</span>
-2. <span class="fragment">Low confidence on one critical field requiring review.</span>
-3. <span class="fragment">Policy-blocked field requiring redaction before display.</span>
-4. <span class="fragment">Interrupted SSE stream at partial completion.</span>
-5. <span class="fragment">Fallback response from backend returning <code>needs_review</code>.</span>
+*[Load the "Fail sample: policy review" input. Submit. Show the needs_review panel.]*
 
----
+*Points to land:*
+- *Reason code shown — `policy_blocked`, not a generic error*
+- *Three reviewer actions: Approve, Edit, Escalate*
+- *Reviewer notes and edited summary — the user's input is part of the record*
+- *Review events panel shows persisted audit events after action*
 
-## Module 5 lab build target
+<!-- pause -->
 
-Build a TanStack component that:
+**Ask:** the reviewer's approval is persisted as a `ReviewDecisionEvent` with an `auditId` and `actorId`.
 
-- <span class="fragment">Displays structured extraction output with field-level status</span>
-- <span class="fragment">Shows confidence bands and supporting evidence</span>
-- <span class="fragment">Supports an edit-before-save review flow</span>
-- <span class="fragment">Handles streaming states and fallback states explicitly</span>
-- <span class="fragment">Applies safe display and redaction where policy requires it</span>
+What evidence does a reviewer actually have here to make a defensible approve/edit/escalate decision? What's missing?
 
-<span class="fragment">Definition of done: every UI state from the state model has a defined, tested rendering path.</span>
+*Pair: 90 seconds.*
 
----
+<!-- pause -->
+
+> The user's confirmation is part of the audit trail, not just the UX.
+
+<!-- end_slide -->
+
+## Demo: the denied path
+
+*[Load the "Fail sample: deny" input — SSN and credit card number. Submit.]*
+
+*Points to land:*
+- *No model call was made — denial happened pre-call*
+- *Reason shown, sensitive content not echoed back*
+- *No reviewer actions — denial is final at this boundary*
+- *Same envelope shape as needs_review — consistent contract*
+
+<!-- pause -->
+
+**Think:** should the deny reason be shown to the end user, or only to an admin reviewer?
+
+*Pair: 90 seconds — what changes in each case, and for whom?*
+
+<!-- end_slide -->
+
+## The UI contract must match the backend contract
+
+The app defines `UiState` as:
+
+```typescript
+type UiState = "idle" | "loading" | "partial"
+             | "accepted" | "needs_review" | "denied" | "error";
+```
+
+<!-- pause -->
+
+`accepted`, `needs_review`, and `denied` map directly to `WorkflowResponse.status`.
+
+`idle`, `loading`, `partial`, and `error` are frontend-only lifecycle states.
+
+<!-- pause -->
+
+> If the UI contract diverges from the backend contract, both become harder to govern and harder to test.
+
+<!-- pause -->
+
+When the backend adds a new status — the frontend must handle it explicitly, not default to a generic error state.
+
+<!-- end_slide -->
+
+## Before you call it production-ready
+
+Five checks — work through them for the current UI:
+
+<!-- pause -->
+
+1. High confidence output — does approval feel appropriately deliberate, or one-click?
+<!-- pause -->
+2. Low confidence field — is the *field* highlighted, not just the overall score?
+<!-- pause -->
+3. `needs_review` reason — is it actionable, or just visible?
+<!-- pause -->
+4. `denied` — is the reason shown without echoing sensitive content?
+<!-- pause -->
+5. Request error — is the state recoverable? Does it preserve what the user typed?
+
+<!-- pause -->
+
+**Think:** which of these does the current app fail?
+
+<!-- end_slide -->
 
 ## Summary
 
-1. <span class="fragment">**UX is part of governance**: it shapes what decisions users make and how.</span>
-2. <span class="fragment">**Structured UI beats generic chat** for production workflows that require verification.</span>
-3. <span class="fragment">**Uncertainty must be visible** and designed to be acted on, not hidden.</span>
-4. <span class="fragment">**State discipline** is essential for streaming, fallback, and audit reliability.</span>
+- **The frontend is a control layer** — it shapes decisions, not just displays results.
+<!-- pause -->
+- **State discipline is governance** — every state needs a defined representation and actions.
+<!-- pause -->
+- **Uncertainty must be visible** — designed to be acted on, not smoothed over.
+<!-- pause -->
+- **The review step is an audit control** — the user's confirmation is part of the record.
+<!-- pause -->
+- **UI contract and backend contract must stay aligned** — divergence makes both harder to govern.
 
----
+<!-- end_slide -->
 
 ## Bridge to Module 6
 
-**What we have now:**
+**What you now have:**
 
-- <span class="fragment">A governed frontend that makes AI output reviewable and auditable.</span>
+A governed frontend that makes AI output reviewable, auditable, and safely displayed.
 
-**What is next:**
+<!-- pause -->
 
-- <span class="fragment">Good UX needs measurable quality behind it to be trustworthy over time.</span>
-- <span class="fragment">Your first task in Module 6: define what "correct" looks like for your extraction feature using a golden dataset.</span>
+**The question Module 6 asks:**
 
-<span class="fragment">Module 6 covers evaluation and quality assurance: repeatable test sets, pass/fail criteria, and prompt comparison.</span>
+Good UX needs measurable quality behind it to be trustworthy over time.
 
----
+<!-- pause -->
+
+- How do you know the extraction is actually correct — not just structurally valid?
+<!-- pause -->
+- How do you detect when a prompt change degrades quality before it reaches users?
+<!-- pause -->
+- What does "good enough to ship" mean in measurable terms?
+
+<!-- pause -->
+
+*Your first task in Module 6: define what "correct" looks like for your extraction feature using a golden dataset.*
+
+<!-- end_slide -->
 
 # Questions?
 
