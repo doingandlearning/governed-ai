@@ -1,8 +1,8 @@
-# Workflow vs Agent Design
-
-**Module 3 — Governed AI Feature Delivery**
-
-<!-- end_slide -->
+---
+title: "**Workflow vs Agent Design**"
+sub_title: Module 3 — Governed AI Feature Delivery
+author: Kevin Cunningham
+---
 
 ## You have a working workflow
 
@@ -16,7 +16,7 @@ Fixed sequence. Known output contract. Pre-call and post-call validation. Fallba
 
 **Think:** what kind of problem would break this pattern?
 
-*60 seconds — what would your workflow struggle to handle?*
+<!-- speaker_note: 60 seconds - what would your workflow struggle to handle? -->
 
 <!-- end_slide -->
 
@@ -60,19 +60,14 @@ The question isn't which pattern is *better* — it's which pattern fits *this p
 
 **Think:** where does your current feature sit? Where might it move?
 
-*Pair: 90 seconds.*
+<!-- speaker_note: Pair activity - 90 seconds. -->
 
 <!-- end_slide -->
 
-## [ ANIMATION — Agent Harness ]
-
-*Switch to the agent harness / car animation now.*
-
-*Return here when done.*
-
-<!-- end_slide -->
 
 ## Pattern 1: Deterministic workflow
+
+<!-- speaker_note: Switch to the agent harness / car animation now. Return here when done. -->
 
 You've built this. You know what it looks like.
 
@@ -108,7 +103,7 @@ Let's see it.
 
 ## Demo: deterministic vs bounded tool path
 
-*[Send the standard happy path request first — they've seen this trace.]*
+<!-- speaker_note: Send the standard happy path request first. Then the same request with executionMode bounded_tool. Point at bounded_tool_selection in the trace, then open tools.ts and ALLOWED_TOOLS. -->
 
 ```json
 {
@@ -116,8 +111,6 @@ Let's see it.
   "source": "demo"
 }
 ```
-
-*[Then send the same request with `executionMode: "bounded_tool"`]:*
 
 ```json
 {
@@ -127,27 +120,18 @@ Let's see it.
 }
 ```
 
-*[Point at the `bounded_tool_selection` trace event:]*
-
 ```
 workflow    🔧 bounded_tool_selection
              tools: ["entity_normalizer","external_web_search"]
              blocked: ["external_web_search"]
 ```
 
-*[Then open `tools.ts` and show `ALLOWED_TOOLS`.]*
-
 <!-- end_slide -->
 
-## [ ANIMATION — Code Execution ]
-
-*Switch to the code execution / sandbox containment animation now.*
-
-*Return here when done.*
-
-<!-- end_slide -->
 
 ## What the demo shows
+
+<!-- speaker_note: Switch to the code execution / sandbox containment animation now. Return here when done. -->
 
 The workflow requested two tools. One ran. One was blocked.
 
@@ -219,7 +203,7 @@ Answer these before implementation — not after.
 
 **Think:** apply these to your current feature. Which answers push you toward workflow? Which toward agent?
 
-*Pair: 2 minutes.*
+<!-- speaker_note: Pair activity - 2 minutes. -->
 
 <!-- end_slide -->
 
@@ -241,7 +225,7 @@ Three scenarios. For each one — workflow, bounded tools, or agentic?
 
 <!-- pause -->
 
-*Pair: classify all three, then be ready to defend Scenario B — that's the contested one.*
+<!-- speaker_note: Pair activity - classify all three, then be ready to defend Scenario B - that's the contested one. -->
 
 <!-- end_slide -->
 
@@ -389,6 +373,8 @@ You will almost always start with more workflow than you need and less agent tha
 
 ## Summary
 
+<!-- incremental_lists: true -->
+
 - **Agentic is not the default** — choose autonomy only when the decision questions justify it.
 <!-- pause -->
 - **Workflow first** keeps delivery predictable, auditable, and testable.
@@ -396,6 +382,8 @@ You will almost always start with more workflow than you need and less agent tha
 - **Bounded tools** offer a controllable middle ground with explicit governance obligations.
 <!-- pause -->
 - **The decision framework** replaces "agents sound more capable" with defensible engineering rationale.
+
+<!-- incremental_lists: false -->
 
 <!-- end_slide -->
 
@@ -423,10 +411,13 @@ Regardless of execution model — workflow, bounded tools, or agent — the same
 
 <!-- pause -->
 
-*Your first task in Module 4: map your tool boundaries against the threat model.*
+<!-- speaker_note: Your first task in Module 4 - map your tool boundaries against the threat model. -->
 
 <!-- end_slide -->
 
-# Questions?
+<!-- jump_to_middle -->
 
-*Module 3 — Governed AI Feature Delivery*
+Questions?
+===
+
+<!-- end_slide -->

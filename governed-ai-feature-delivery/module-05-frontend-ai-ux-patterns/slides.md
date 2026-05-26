@@ -1,6 +1,16 @@
-# Frontend AI UX Patterns
+---
+title: "**Frontend AI UX Patterns**"
+sub_title: Module 5 — Governed AI Feature Delivery
+author: Kevin Cunningham
+---
 
-**Module 5 — Governed AI Feature Delivery**
+## Opening scenario
+
+Backend returns `needs_review` with reason `policy_sensitive_output`.
+
+The UI shows a green checkmark and the raw model summary.
+
+**Think:** is that a backend bug, a frontend bug, or a governance gap?
 
 <!-- end_slide -->
 
@@ -16,7 +26,7 @@ Your backend now produces three clearly-distinguished outcomes:
 
 **Think:** for each of those three outcomes — what should a user see? What should they be able to do?
 
-*60 seconds — write it down before we look at the app.*
+<!-- speaker_note: 60 seconds - write it down before we look at the app. -->
 
 <!-- end_slide -->
 
@@ -40,41 +50,46 @@ A strong backend with a weak frontend is still a governance failure.
 
 <!-- end_slide -->
 
-## The state model
+## State model and machine
 
-Your UI has more states than your backend.
+<!-- column_layout: [3, 2] -->
 
-<!-- pause -->
+<!-- column: 0 -->
 
-Backend produces: `accepted`, `needs_review`, `denied`
+Backend outcomes: `accepted`, `needs_review`, `denied`
 
 UI also needs: `idle`, `loading`, `error`, `partial`
 
-<!-- pause -->
-
 > Undefined states become support tickets.
 
-<!-- end_slide -->
+<!-- column: 1 -->
 
-## State model
+![image:width:100%](ui_state_model.png)
 
-![State model](ui_state_model.png)
+<!-- reset_layout -->
 
-<!-- end_slide -->
+<!-- column_layout: [3, 2] -->
 
-## State machine
+<!-- column: 0 -->
 
-![State machine](ui_state_machine.png)
+Every transition should be observable — the telemetry panel is your audit affordance.
+
+<!-- column: 1 -->
+
+![image:width:100%](ui_state_machine.png)
+
+<!-- reset_layout -->
 
 <!-- end_slide -->
 
 ## State model walkthrough
 
-*[Open the frontend app. Point at the transition telemetry panel at the bottom.]*
-
-*[Submit a request and watch the state transitions appear in real time: `idle → loading → accepted`]*
-
-*[Then ask:]*
+<!--
+speaker_note: |
+  Open the frontend app. Point at the transition telemetry panel.
+  Submit a request and watch idle → loading → accepted.
+  Then ask the audit question below.
+-->
 
 > "The telemetry panel records every state change with a timestamp. Where does that data go in a production system — and why does it matter for audit?"
 
@@ -82,19 +97,22 @@ UI also needs: `idle`, `loading`, `error`, `partial`
 
 **Think:** would a chat interface produce this kind of traceable state record? What would you lose?
 
-*Pair: 90 seconds.*
+<!-- speaker_note: Pair activity - 90 seconds. -->
 
 <!-- end_slide -->
 
 ## Demo: the accepted path
 
-*[Load the "Pass sample: invoice" input. Submit. Show the accepted result panel.]*
+**Demo:** Load "Pass sample: invoice" — show the accepted result panel.
 
-*Points to land:*
-- *Typed fields — not a paragraph of generated text*
-- *Confidence shown as a raw number — pause here*
-- *Trace ID visible — provenance in the UI*
-- *No one-click action — result displayed, not committed*
+<!--
+speaker_note: |
+  Points to land:
+  - Typed fields — not a paragraph of generated text
+  - Confidence shown as a raw number — pause here
+  - Trace ID visible — provenance in the UI
+  - No one-click action — result displayed, not committed
+-->
 
 <!-- pause -->
 
@@ -112,13 +130,16 @@ Confidence needs bands with documented meaning — not a raw float. `0.95` shoul
 
 ## Demo: the needs_review path
 
-*[Load the "Fail sample: policy review" input. Submit. Show the needs_review panel.]*
+**Demo:** Load "Fail sample: policy review" — show the needs_review panel.
 
-*Points to land:*
-- *Reason code shown — `policy_blocked`, not a generic error*
-- *Three reviewer actions: Approve, Edit, Escalate*
-- *Reviewer notes and edited summary — the user's input is part of the record*
-- *Review events panel shows persisted audit events after action*
+<!--
+speaker_note: |
+  Points to land:
+  - Reason code shown — policy_blocked, not a generic error
+  - Three reviewer actions: Approve, Edit, Escalate
+  - Reviewer notes and edited summary — part of the record
+  - Review events panel shows persisted audit events after action
+-->
 
 <!-- pause -->
 
@@ -126,7 +147,7 @@ Confidence needs bands with documented meaning — not a raw float. `0.95` shoul
 
 What evidence does a reviewer actually have here to make a defensible approve/edit/escalate decision? What's missing?
 
-*Pair: 90 seconds.*
+<!-- speaker_note: Pair activity - 90 seconds. -->
 
 <!-- pause -->
 
@@ -136,19 +157,22 @@ What evidence does a reviewer actually have here to make a defensible approve/ed
 
 ## Demo: the denied path
 
-*[Load the "Fail sample: deny" input — SSN and credit card number. Submit.]*
+**Demo:** Load "Fail sample: deny" — show the denied panel (no sensitive content echoed).
 
-*Points to land:*
-- *No model call was made — denial happened pre-call*
-- *Reason shown, sensitive content not echoed back*
-- *No reviewer actions — denial is final at this boundary*
-- *Same envelope shape as needs_review — consistent contract*
+<!--
+speaker_note: |
+  Points to land:
+  - No model call was made — denial happened pre-call
+  - Reason shown, sensitive content not echoed back
+  - No reviewer actions — denial is final at this boundary
+  - Same envelope shape as needs_review — consistent contract
+-->
 
 <!-- pause -->
 
 **Think:** should the deny reason be shown to the end user, or only to an admin reviewer?
 
-*Pair: 90 seconds — what changes in each case, and for whom?*
+<!-- speaker_note: Pair activity - 90 seconds - what changes in each case, and for whom? -->
 
 <!-- end_slide -->
 
@@ -201,6 +225,8 @@ Five checks — work through them for the current UI:
 
 ## Summary
 
+<!-- incremental_lists: true -->
+
 - **The frontend is a control layer** — it shapes decisions, not just displays results.
 <!-- pause -->
 - **State discipline is governance** — every state needs a defined representation and actions.
@@ -210,6 +236,8 @@ Five checks — work through them for the current UI:
 - **The review step is an audit control** — the user's confirmation is part of the record.
 <!-- pause -->
 - **UI contract and backend contract must stay aligned** — divergence makes both harder to govern.
+
+<!-- incremental_lists: false -->
 
 <!-- end_slide -->
 
@@ -235,10 +263,13 @@ Good UX needs measurable quality behind it to be trustworthy over time.
 
 <!-- pause -->
 
-*Your first task in Module 6: define what "correct" looks like for your extraction feature using a golden dataset.*
+<!-- speaker_note: Your first task in Module 6 - define what "correct" looks like for your extraction feature using a golden dataset. -->
 
 <!-- end_slide -->
 
-# Questions?
+<!-- jump_to_middle -->
 
-*Module 5 — Governed AI Feature Delivery*
+Questions?
+===
+
+<!-- end_slide -->

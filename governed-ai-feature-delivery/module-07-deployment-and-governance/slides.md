@@ -1,8 +1,8 @@
-# Deployment and Governance
-
-**Module 7 — Governed AI Feature Delivery**
-
-<!-- end_slide -->
+---
+title: "**Deployment and Governance**"
+sub_title: Module 7 — Governed AI Feature Delivery
+author: Kevin Cunningham
+---
 
 ## You already have a release artifact
 
@@ -20,7 +20,7 @@ It contains: prompt version, model identifier, confidence threshold, dataset SHA
 
 **Think:** if a colleague made a change to `validators.ts` and reran the evals — what would change in this file? Would you know a change had happened?
 
-*60 seconds.*
+<!-- speaker_note: 60 seconds. -->
 
 <!-- pause -->
 
@@ -45,7 +45,7 @@ The specific failure modes for AI features:
 
 **Think:** which of these is your current build most exposed to?
 
-*Pair: 90 seconds.*
+<!-- speaker_note: Pair activity - 90 seconds. -->
 
 <!-- end_slide -->
 
@@ -107,24 +107,25 @@ In a pipeline those become:
 
 **Think:** which of your Module 6 gates would you make a hard block — the pipeline fails and the deploy stops? Which would you monitor but not block on?
 
-*Pair: 90 seconds.*
+<!-- speaker_note: Pair activity - 90 seconds. -->
 
 <!-- end_slide -->
 
 ## Demo: the kill switch
 
-*[Run the kill switch demo:]*
+**Demo:** Run the kill switch script — show feature ON vs OFF responses.
 
 ```bash
 npx tsx src/ops/demoKillSwitchAndRollback.ts
 ```
 
-*[Show both responses — feature ON and feature OFF.]*
-
-*[Point at:]*
-- *The `denied` response shape is identical to any other denied response — the frontend contract holds*
-- *No redeployment required — one config value*
-- *The trace is still complete — even the kill switch produces audit evidence*
+<!--
+speaker_note: |
+  Points to land:
+  - denied response shape matches any other denied — frontend contract holds
+  - No redeployment required — one config value
+  - Trace is still complete — kill switch produces audit evidence
+-->
 
 <!-- pause -->
 
@@ -212,7 +213,7 @@ You've seen all of these now — but naming them helps:
 
 **Think:** which of these is most likely to be the first thing your team skips under delivery pressure?
 
-*60 seconds — honest answer.*
+<!-- speaker_note: 60 seconds - honest answer. -->
 
 <!-- end_slide -->
 
@@ -240,6 +241,8 @@ Definition of done: a non-engineer could read this pack and understand whether t
 
 ## Summary
 
+<!-- incremental_lists: true -->
+
 - **Release-ready AI** requires evidence-backed gates — all five, not a partial checklist.
 <!-- pause -->
 - **Version everything** that changes behaviour, not just application code.
@@ -249,6 +252,8 @@ Definition of done: a non-engineer could read this pack and understand whether t
 - **Rollback and fallback** are both required, both different, and both must be rehearsed.
 <!-- pause -->
 - **Every incident** that isn't turned into a new eval case will recur.
+
+<!-- incremental_lists: false -->
 
 <!-- end_slide -->
 
@@ -274,6 +279,9 @@ Module 8 is the final integration and review session. Bring your artefacts.
 
 <!-- end_slide -->
 
-# Questions?
+<!-- jump_to_middle -->
 
-*Module 7 — Governed AI Feature Delivery*
+Questions?
+===
+
+<!-- end_slide -->

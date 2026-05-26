@@ -1,6 +1,16 @@
-# Backend Workflow Patterns
+---
+title: "**Backend Workflow Patterns**"
+sub_title: Module 2 — Governed AI Feature Delivery
+author: Kevin Cunningham
+---
 
-**Module 2 — Governed AI Feature Delivery**
+## Opening scenario
+
+Module 1 produced a governance brief: trace IDs, prompt versions, validation gates.
+
+Someone proposes shipping the extract endpoint in one controller method that calls the model directly.
+
+**Think:** which audit question fails first — and which layer should have caught it?
 
 <!-- end_slide -->
 
@@ -34,7 +44,7 @@ async extract(@Body() body: any) {
 
 **Think:** using your governance brief from Module 1 — what's missing here?
 
-*60 seconds. Then we'll compare.*
+<!-- speaker_note: 60 seconds. Then we'll compare. -->
 
 <!-- end_slide -->
 
@@ -68,11 +78,11 @@ We need to add: validation, prompt management, tracing, fallback handling.
 
 **Think:** where would you put each of those? What are your options?
 
-*90 seconds — then pairs.*
+<!-- speaker_note: 90 seconds - then pairs. -->
 
 <!-- pause -->
 
-*Share: what did you disagree on?*
+<!-- speaker_note: Share debrief - what did you disagree on? -->
 
 <!-- end_slide -->
 
@@ -96,14 +106,17 @@ Each layer has one job. Let's look at what that means in practice.
 
 ## Demo: the anti-pattern vs the pattern
 
-*[Show demo app — walk the anti-pattern path first, then the governed path.]*
+**Demo:** Walk the anti-pattern path first, then the governed path in the demo app.
 
-*Points to land during the demo:*
-- *Where the controller boundary sits*
-- *How the workflow service owns the sequence*
-- *Where the prompt version appears in the trace*
-- *What a post-call validation failure looks like*
-- *What the fallback response looks like vs a raw model error*
+<!--
+speaker_note: |
+  Points to land:
+  - Where the controller boundary sits
+  - How the workflow service owns the sequence
+  - Where the prompt version appears in the trace
+  - What a post-call validation failure looks like
+  - What the fallback response looks like vs a raw model error
+-->
 
 <!-- end_slide -->
 
@@ -261,6 +274,8 @@ A NestJS endpoint that:
 
 ## Summary
 
+<!-- incremental_lists: true -->
+
 - **Structure beats ad-hoc calls** — reliability, reuse, and auditability require it.
 <!-- pause -->
 - **Prompts are code artefacts** — version them, review them, treat changes as behaviour changes.
@@ -270,6 +285,8 @@ A NestJS endpoint that:
 - **Gateway integration** enables consistent traceability across features.
 <!-- pause -->
 - **Fallback is intentional design** — not an edge case.
+
+<!-- incremental_lists: false -->
 
 <!-- end_slide -->
 
@@ -295,10 +312,13 @@ When is a deterministic workflow the right tool — and when isn't it?
 
 <!-- pause -->
 
-*Your first task in Module 3: map your workflow against the agent decision framework.*
+<!-- speaker_note: Your first task in Module 3 - map your workflow against the agent decision framework. -->
 
 <!-- end_slide -->
 
-# Questions?
+<!-- jump_to_middle -->
 
-*Module 2 — Governed AI Feature Delivery*
+Questions?
+===
+
+<!-- end_slide -->

@@ -1,8 +1,8 @@
-# Security and Guardrails
-
-**Module 4 — Governed AI Feature Delivery**
-
-<!-- end_slide -->
+---
+title: "**Security and Guardrails**"
+sub_title: Module 4 — Governed AI Feature Delivery
+author: Kevin Cunningham
+---
 
 ## You have a working, governed workflow
 
@@ -12,7 +12,7 @@ It validates input. It calls the model. It checks output. It falls back on failu
 
 **Think:** where could an attacker interfere with that pipeline?
 
-*60 seconds — write down every entry point you can think of.*
+<!-- speaker_note: 60 seconds - write down every entry point you can think of. -->
 
 <!-- end_slide -->
 
@@ -66,7 +66,7 @@ The injection is in the document content — not the request metadata.
 
 ## Demo: what happens today
 
-*[Send this request to the running app:]*
+**Demo:** Send the injection payload — show trace and response.
 
 ```json
 {
@@ -76,11 +76,13 @@ The injection is in the document content — not the request metadata.
 }
 ```
 
-*[Show the trace and response. Point at what happened — and what didn't.]*
+<!--
+speaker_note: |
+  Show the trace and response. Point at what happened — and what didn't.
+  Then ask the question on the slide.
+-->
 
 <!-- pause -->
-
-*[Then ask:]*
 
 > "Did the guardrails catch this? What would need to change for them to?"
 
@@ -161,7 +163,7 @@ Both checks are required. Schema tells you the structure is correct. Policy tell
 
 ## Demo: the policy gap
 
-*[Send this request:]*
+**Demo:** Send the policy-blocked payload — post-call validation fails.
 
 ```json
 {
@@ -171,9 +173,11 @@ Both checks are required. Schema tells you the structure is correct. Policy tell
 }
 ```
 
-*[This triggers the `policyBlocked` mock scenario — invalid documentType, post-call validation fails.]*
-
-*[Then discuss: what policy check would catch the summary injection from the previous slide? Where would it live?]*
+<!--
+speaker_note: |
+  Triggers policyBlocked mock — invalid documentType.
+  Discuss: what policy check would catch summary injection from the previous slide? Where would it live?
+-->
 
 <!-- end_slide -->
 
@@ -195,7 +199,7 @@ Your current pre-call validator checks length and type. In a production regulate
 
 **Think:** which of these does your Module 2 validator implement? Which are missing?
 
-*Pair: 90 seconds.*
+<!-- speaker_note: Pair activity - 90 seconds. -->
 
 <!-- end_slide -->
 
@@ -281,7 +285,7 @@ These are the patterns that feel like security but aren't:
 
 **Think:** which of these is your current implementation closest to?
 
-*60 seconds — honest answer.*
+<!-- speaker_note: 60 seconds - honest answer. -->
 
 <!-- end_slide -->
 
@@ -327,6 +331,8 @@ Controls must produce audit evidence by default — not on request:
 
 ## Summary
 
+<!-- incremental_lists: true -->
+
 - **Security is boundary design** — know what's trusted, what isn't, and enforce it structurally.
 <!-- pause -->
 - **Guardrails are layered** — input, prompt, tool, output, fallback. A gap in any layer is exploitable.
@@ -334,6 +340,8 @@ Controls must produce audit evidence by default — not on request:
 - **Schema is not policy** — both checks are required, every time.
 <!-- pause -->
 - **Safe fallback is a success path** — not an exception, not an error, not a sign of failure.
+
+<!-- incremental_lists: false -->
 
 <!-- end_slide -->
 
@@ -359,10 +367,13 @@ Secure backend outputs still need responsible UX to be useful.
 
 <!-- pause -->
 
-*Module 5 covers frontend AI UX patterns — presenting confidence, uncertainty, and review states clearly.*
+<!-- speaker_note: Module 5 covers frontend AI UX patterns - presenting confidence, uncertainty, and review states clearly. -->
 
 <!-- end_slide -->
 
-# Questions?
+<!-- jump_to_middle -->
 
-*Module 4 — Governed AI Feature Delivery*
+Questions?
+===
+
+<!-- end_slide -->

@@ -1,8 +1,8 @@
-# AI Feature Delivery in Regulated Environments
-
-**Module 1 — Governed AI Feature Delivery**
-
-<!-- end_slide -->
+---
+title: "**AI Feature Delivery** in Regulated Environments"
+sub_title: Module 1 — Governed AI Feature Delivery
+author: Kevin Cunningham
+---
 
 ## Before we start
 
@@ -51,7 +51,7 @@ An AI version: LLM-powered, probabilistic.
 
 **Think:** what changes about how you test, deploy, and audit it?
 
-*60 seconds — then we'll compare notes.*
+<!-- speaker_note: 60 seconds - then we'll compare notes. -->
 
 <!-- end_slide -->
 
@@ -121,7 +121,7 @@ Look at these four options:
 - Fallback strategy if the model is unavailable
 - Regional routing requirement (EU vs US)
 
-*90 seconds — we'll compare in a moment.*
+<!-- speaker_note: 90 seconds - we'll compare in a moment. -->
 
 <!-- end_slide -->
 
@@ -278,6 +278,8 @@ The lab produces a one-page governance design brief you'll carry forward.
 
 ## Summary
 
+<!-- incremental_lists: true -->
+
 - **AI features are different**: broader engineering controls are required.
 <!-- pause -->
 - **Governed delivery is practical**: boundaries, traceability, validation.
@@ -285,6 +287,8 @@ The lab produces a one-page governance design brief you'll carry forward.
 - **Architecture matters early**: where logic lives determines risk.
 <!-- pause -->
 - **This is the foundation** for workflows, guardrails, UX, evals, and deployment.
+
+<!-- incremental_lists: false -->
 
 <!-- end_slide -->
 
@@ -307,10 +311,13 @@ In Module 2 you'll translate those decisions into a concrete NestJS workflow bou
 
 <!-- pause -->
 
-*Your decisions in the lab shape what you build in Module 2.*
+<!-- speaker_note: Your decisions in the lab shape what you build in Module 2. -->
 
 <!-- end_slide -->
 
-# Questions?
+<!-- jump_to_middle -->
 
-*Module 1 — Governed AI Feature Delivery*
+Questions?
+===
+
+<!-- end_slide -->

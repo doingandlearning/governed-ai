@@ -1,8 +1,8 @@
-# Evaluation and Quality Assurance
-
-**Module 6 — Governed AI Feature Delivery**
-
-<!-- end_slide -->
+---
+title: "**Evaluation and Quality Assurance**"
+sub_title: Module 6 — Governed AI Feature Delivery
+author: Kevin Cunningham
+---
 
 ## A question about your confidence threshold
 
@@ -16,7 +16,7 @@ In Module 2 you set a confidence threshold. In Module 4 you added policy checks.
 
 <!-- pause -->
 
-*60 seconds — what was the basis for those decisions?*
+<!-- speaker_note: 60 seconds - what was the basis for those decisions? -->
 
 <!-- pause -->
 
@@ -61,7 +61,7 @@ Those are eval criteria. You already wrote them. You just haven't run them syste
 
 **Think:** what inputs would you need to test all five of those rules reliably?
 
-*Pair: 90 seconds.*
+<!-- speaker_note: Pair activity - 90 seconds. -->
 
 <!-- end_slide -->
 
@@ -79,7 +79,7 @@ A golden dataset is a curated set of inputs with documented expected outputs —
 
 **Think:** for the document extraction feature — what are the ten cases you would include?
 
-*60 seconds — write them down.*
+<!-- speaker_note: 60 seconds - write them down. -->
 
 <!-- end_slide -->
 
@@ -125,7 +125,7 @@ Separate hard failures from soft thresholds:
 
 **Think:** which of these does your Module 4 validator cover? Which does it miss entirely?
 
-*Pair: 90 seconds.*
+<!-- speaker_note: Pair activity - 90 seconds. -->
 
 <!-- end_slide -->
 
@@ -219,7 +219,7 @@ These feel like rigour but aren't:
 
 **Think:** which of these is your current setup closest to?
 
-*60 seconds — honest answer.*
+<!-- speaker_note: 60 seconds - honest answer. -->
 
 <!-- end_slide -->
 
@@ -247,6 +247,8 @@ Definition of done: the suite runs without manual intervention and produces a cl
 
 ## Summary
 
+<!-- incremental_lists: true -->
+
 - **Evals are delivery discipline** — not research, not optional, not post-incident.
 <!-- pause -->
 - **Golden datasets** anchor quality across prompt and model changes over time.
@@ -256,6 +258,8 @@ Definition of done: the suite runs without manual intervention and produces a cl
 - **Traces and evals together** improve debugging speed and governance evidence.
 <!-- pause -->
 - **Release confidence** comes from measurable evidence, not opinion.
+
+<!-- incremental_lists: false -->
 
 <!-- end_slide -->
 
@@ -281,10 +285,13 @@ Eval results need to gate deployment, not just inform it.
 
 <!-- pause -->
 
-*Your first task in Module 7: decide which of your eval criteria are hard gates and which are advisory.*
+<!-- speaker_note: Your first task in Module 7 - decide which of your eval criteria are hard gates and which are advisory. -->
 
 <!-- end_slide -->
 
-# Questions?
+<!-- jump_to_middle -->
 
-*Module 6 — Governed AI Feature Delivery*
+Questions?
+===
+
+<!-- end_slide -->

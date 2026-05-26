@@ -1,8 +1,8 @@
-# Final Build and Review
-
-**Module 8 — Governed AI Feature Delivery**
-
-<!-- end_slide -->
+---
+title: "**Final Build and Review**"
+sub_title: Module 8 — Governed AI Feature Delivery
+author: Kevin Cunningham
+---
 
 ## What this session is
 
@@ -39,7 +39,7 @@ Not the thing you haven't finished. The thing you've built but aren't sure holds
 
 <!-- pause -->
 
-*90 seconds — write it down.*
+<!-- speaker_note: 90 seconds - write it down. -->
 
 <!-- pause -->
 
@@ -103,7 +103,7 @@ Knowing these before the demo is useful:
 
 **Think:** which of these is your build closest to?
 
-*Pair: 90 seconds — be honest.*
+<!-- speaker_note: Pair activity - 90 seconds - be honest. -->
 
 <!-- end_slide -->
 
@@ -153,6 +153,9 @@ You leave with three things:
 
 <!-- end_slide -->
 
-# Questions?
+<!-- jump_to_middle -->
 
-*Module 8 — Governed AI Feature Delivery*
+Questions?
+===
+
+<!-- end_slide -->
