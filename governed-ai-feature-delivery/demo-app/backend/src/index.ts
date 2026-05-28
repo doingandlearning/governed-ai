@@ -4,7 +4,6 @@ import {
   createMockLlmGateway,
   createOpenAiLlmGateway,
 } from "./features/document-extraction";
-import { createMastraRuntime } from "./mastra/runtime";
 import { getRuntimeProfileConfig } from "./config/runtimeProfile";
 
 async function main() {
@@ -18,9 +17,11 @@ async function main() {
         })
       : createMockLlmGateway({ debugLogging: config.debugLlmLogs });
 
-  const gateway = config.useMastraRuntime
-    ? createMastraManagedGateway(createMastraRuntime(), baseGateway)
-    : baseGateway;
+  let gateway = baseGateway;
+  if (config.useMastraRuntime) {
+    const { createMastraRuntime } = require("./mastra/runtime") as typeof import("./mastra/runtime");
+    gateway = createMastraManagedGateway(createMastraRuntime(), baseGateway);
+  }
 
   const controller = createDocumentController({
     gateway,

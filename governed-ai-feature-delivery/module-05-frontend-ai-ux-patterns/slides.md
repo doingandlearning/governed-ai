@@ -26,6 +26,11 @@ Your backend now produces three clearly-distinguished outcomes:
 
 **Think:** for each of those three outcomes — what should a user see? What should they be able to do?
 
+- accepted: tick! ✅ 📸
+- needs_review: 🌕 ⁉️ generic message, which policy, link or ui to validate
+- denied: 🛑
+
+
 <!-- speaker_note: 60 seconds - write it down before we look at the app. -->
 
 <!-- end_slide -->
@@ -79,6 +84,14 @@ Every transition should be observable — the telemetry panel is your audit affo
 ![image:width:100%](ui_state_machine.png)
 
 <!-- reset_layout -->
+
+<!-- end_slide -->
+
+![image:width:100%](ui_state_model.png)
+
+<!-- end_slide -->
+
+![image:width:100%](ui_state_machine.png)
 
 <!-- end_slide -->
 

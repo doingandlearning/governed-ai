@@ -89,7 +89,7 @@ You've built this. You know what it looks like.
 
 ## Pattern 2: Bounded tools
 
-Same workflow structure — but the model can invoke a constrained set of tools as part of processing.
+Same workflow structure but the model can invoke a constrained set of tools as part of processing.
 
 <!-- pause -->
 
@@ -277,17 +277,31 @@ The ownership model differs — MCP tools are platform-managed, internal tools a
 
 ## LLM skills vs MCPs
 
-Two ways to extend what a model can do. MCP is the current standard — and a live source of frustration.
+Two ways to extend what a model can do. MCP is the current standard and a live source of frustration.
 
 <!-- pause -->
 
-| | LLM skills (built-in tools) | MCP tools |
-| - | --------------------------- | --------- |
-| What they are | Capabilities baked into the model or SDK | External servers the harness connects to at runtime |
-| Ownership | Model provider or your team | Platform-managed or third-party |
-| Latency | Low — no network hop | Higher — crosses a process boundary |
-| Governance | Defined at model/SDK level | Explicit boundaries required per tool |
-| Best for | Core reasoning tasks, structured output, code gen | Dynamic tool discovery, stateful integrations, IDE tooling |
+<!-- column_layout: [1, 1] -->
+
+<!-- column: 0 -->
+
+### LLM skills (built-in tools)
+- **What they are:** Capabilities baked into the model or SDK
+- **Ownership:** Model provider or your team
+- **Latency:** Low - no network hop
+- **Governance:** Defined at model/SDK level
+- **Best for:** Core reasoning tasks, structured output, code gen
+
+<!-- column: 1 -->
+
+### MCP tools
+- **What they are:** External servers the harness connects to at runtime
+- **Ownership:** Platform-managed or third-party
+- **Latency:** Higher - crosses a process boundary
+- **Governance:** Explicit boundaries required per tool
+- **Best for:** Dynamic tool discovery, stateful integrations, IDE tooling
+
+<!-- reset_layout -->
 
 <!-- pause -->
 

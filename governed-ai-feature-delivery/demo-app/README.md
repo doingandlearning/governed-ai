@@ -4,8 +4,16 @@ This folder contains a small **NestJS** API (`backend/`) and a **Vite + React** 
 
 ## Prerequisites
 
-- **Node.js** 20 or newer (the repo uses current TypeScript and Nest; use an LTS if unsure).
+- **Node.js** **20.19+** or **22.12+** (required by Vitest/Vite; see troubleshooting below).
 - **npm** (comes with Node).
+
+Check your version:
+
+```bash
+node --version
+```
+
+If you use [nvm](https://github.com/nvm-sh/nvm) or [fnm](https://github.com/Schniz/fnm), run `nvm install` / `fnm install` from this folder — `.nvmrc` pins **20.19.0**.
 
 ## 1. Backend
 
@@ -74,3 +82,14 @@ From `frontend/`:
 npm run lint
 npm run build
 ```
+
+## Troubleshooting (Node version)
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| `bad option: --env-file` | Node older than 20.6 | Upgrade to **20.19+** (scripts now load `.env` via dotenv instead). |
+| `tsx: command not found` on `npm run dev` | Global `tsx` missing | Run `npm install` in `backend/` — `tsx` is a dev dependency; use `npm run dev` or `npm run dev:nest`. |
+| Vitest/Vite install or test errors on Node 20.0–20.18 | Toolchain needs native bindings from newer Node | Upgrade to **Node 20.19+** or **22 LTS**. |
+| Errors when `APP_PROFILE=stage` or Mastra enabled | `@mastra/core` targets Node **22.13+** | Use `APP_PROFILE=dev` locally, or upgrade to Node 22 for stage/prod demos. |
+
+Default `APP_PROFILE=dev` avoids loading Mastra at startup so Node 20.19+ is enough for the usual workshop path.

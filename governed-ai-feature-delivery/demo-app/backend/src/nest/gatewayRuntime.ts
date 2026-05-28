@@ -3,7 +3,6 @@ import {
   createMockLlmGateway,
   createOpenAiLlmGateway,
 } from "../features/document-extraction";
-import { createMastraRuntime } from "../mastra/runtime";
 import { getRuntimeProfileConfig } from "../config/runtimeProfile";
 
 export function createGatewayForRuntime() {
@@ -18,9 +17,14 @@ export function createGatewayForRuntime() {
         })
       : createMockLlmGateway({ debugLogging: config.debugLlmLogs });
 
-  return config.useMastraRuntime
-    ? createMastraManagedGateway(createMastraRuntime(), baseGateway)
-    : baseGateway;
+  if (!config.useMastraRuntime) {
+    return baseGateway;
+  }
+
+  // Load Mastra only when enabled (stage/prod). Keeps default dev profile
+  // working on Node 20 without pulling @mastra/core at startup.
+  const { createMastraRuntime } = require("../mastra/runtime") as typeof import("../mastra/runtime");
+  return createMastraManagedGateway(createMastraRuntime(), baseGateway);
 }
 
 function requireEnv(name: string): string {

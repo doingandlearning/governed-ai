@@ -12,18 +12,53 @@ It validates input. It calls the model. It checks output. It falls back on failu
 
 **Think:** where could an attacker interfere with that pipeline?
 
+- Input Validation - prompt injection
+- Supply chain danger
+- Dangerous tool call - external website/code execution
+- DDoS  
+
 <!-- speaker_note: 60 seconds - write down every entry point you can think of. -->
 
 <!-- end_slide -->
 
 ## The entry points
 
-| Boundary | Examples | Default trust |
-| -------- | -------- | ------------- |
-| User input | Free text, form fields, uploads | Untrusted |
-| Document / retrieved text | OCR output, retrieved chunks, attachments | Untrusted |
-| Tool responses | External APIs, search results | Semi-trusted |
-| Internal policy / config | Allowlists, schemas, thresholds | Trusted |
+<!-- column_layout: [1, 1] -->
+
+<!-- column: 0 -->
+
+**Boundary:** User input.
+
+**Example:** free text, form fields, uploads. 
+
+**Default trust:** untrusted.
+
+<!-- new_lines: 2 -->
+<!-- pause -->
+
+**Boundary:** Document / retrieved text. 
+
+**Example:** OCR output, retrieved chunks, attachments. 
+
+**Default trust:** untrusted.
+<!-- pause -->
+<!-- column: 1 -->
+
+**Boundary:** Tool responses.
+
+**Example:** external APIs, search results. 
+
+**Default trust:** semi-trusted.
+
+<!-- new_lines: 2 -->
+<!-- pause -->
+**Boundary:** Internal policy / config. 
+
+**Example:** allowlists, schemas, thresholds. 
+
+**Default trust:** trusted.
+
+<!-- reset_layout -->
 
 <!-- pause -->
 

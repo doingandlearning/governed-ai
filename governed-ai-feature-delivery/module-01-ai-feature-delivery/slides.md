@@ -57,12 +57,38 @@ An AI version: LLM-powered, probabilistic.
 
 ## What actually changes
 
-| Area | Traditional feature | AI feature |
-| ---- | ------------------- | ---------- |
-| Output | Deterministic | Probabilistic / variable |
-| Testing | Unit/integration mostly enough | Needs eval datasets + quality thresholds |
-| Change risk | Mostly code changes | Code + prompt + model + data drift |
-| Observability | Logs and metrics | Logs, traces, prompt/model provenance |
+<!-- column_layout: [1, 1] -->
+
+<!-- column: 0 -->
+
+**Output**
+
+- Traditional: Deterministic
+- AI: Probabilistic / variable
+
+<!-- pause -->
+<!-- newlines: 4 -->
+
+
+**Testing**
+
+- Traditional: Unit/integration mostly enough
+- AI: Needs eval datasets + quality thresholds
+<!-- pause -->
+<!-- column: 1 -->
+
+**Change risk**
+
+- Traditional: Mostly code changes
+- AI: Code + prompt + model + data drift
+<!-- pause -->
+<!-- newlines: 2 -->
+**Observability**
+
+- Traditional: Logs and metrics
+- AI: Logs, traces, prompt/model provenance
+
+<!-- reset_layout -->
 
 <!-- pause -->
 
@@ -114,7 +140,7 @@ Look at these four options:
 <!-- pause -->
 
 **Think:** where would you put each of these?
-
+<!-- incremental_lists: true -->
 - Allowed document types
 - Confidence threshold for routing
 - Which model to use
@@ -127,12 +153,35 @@ Look at these four options:
 
 ## Where logic should live
 
-| Put it in... | Typical responsibilities | Example |
-| ------------ | ------------------------ | ------- |
-| Backend code | Workflow sequence, retries, policy branching | Retry if confidence score below threshold |
-| Prompt assets in code | Task instructions, output format constraints | Extraction schema and field definitions |
-| Config | Model selection, thresholds, feature flags | Model name, confidence threshold, region |
-| Infrastructure | Deployment policy, secrets, regional routing | EU/US routing rules, secrets management |
+<!-- column_layout: [1, 1] -->
+
+<!-- column: 0 -->
+
+**Backend code**
+
+- Responsibilities: Workflow sequence, retries, policy branching
+- Example: Retry if confidence score below threshold
+
+<!-- pause -->
+
+**Prompt assets in code**
+
+- Responsibilities: Task instructions, output format constraints
+- Example: Extraction schema and field definitions
+
+<!-- column: 1 -->
+<!-- pause -->
+**Config**
+
+- Responsibilities: Model selection, thresholds, feature flags
+- Example: Model name, confidence threshold, region
+<!-- pause -->
+**Infrastructure**
+
+- Responsibilities: Deployment policy, secrets, regional routing
+- Example: EU/US routing rules, secrets management
+
+<!-- reset_layout -->
 
 <!-- pause -->
 
@@ -170,11 +219,11 @@ Each step is a control point. Each control point needs evidence.
 
 ## Architecture boundaries
 
-For this course, we're working across four layers:
+For this course, we're working across five layers:
 
 <!-- pause -->
 
-- **TanStack frontend**: interaction, review, uncertainty display
+- **React frontend**: interaction, review, uncertainty display
 <!-- pause -->
 - **NestJS backend**: orchestration, policy, deterministic workflow steps
 <!-- pause -->
@@ -281,11 +330,8 @@ The lab produces a one-page governance design brief you'll carry forward.
 <!-- incremental_lists: true -->
 
 - **AI features are different**: broader engineering controls are required.
-<!-- pause -->
 - **Governed delivery is practical**: boundaries, traceability, validation.
-<!-- pause -->
 - **Architecture matters early**: where logic lives determines risk.
-<!-- pause -->
 - **This is the foundation** for workflows, guardrails, UX, evals, and deployment.
 
 <!-- incremental_lists: false -->

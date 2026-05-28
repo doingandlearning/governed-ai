@@ -40,6 +40,14 @@ async extract(@Body() body: any) {
 }
 ```
 
+- No input validation
+- Pass-through - with no guardrails
+- No schema on the body
+- No auth
+- No output schema
+- No validation on the content filtering
+- LLM issues
+- No logging
 <!-- pause -->
 
 **Think:** using your governance brief from Module 1 — what's missing here?
@@ -122,13 +130,44 @@ speaker_note: |
 
 ## After the demo: layer ownership
 
-| Layer | Owns | Avoids |
-| ----- | ---- | ------ |
-| Controller | Transport contract, auth context | Orchestration, prompt logic |
-| Workflow service | Sequence, branching, retries, fallback | HTTP transport concerns |
-| Prompt module | Task instructions, placeholders, version id | Business policy, branching |
-| Validators | Schema and policy checks | Model invocation |
-| Gateway adapter | Model routing, trace metadata, audit envelope | Domain decision logic |
+<!-- column_layout: [1, 1] -->
+
+<!-- column: 0 -->
+
+**Controller**
+
+- Owns: Transport contract, auth context
+- Avoids: Orchestration, prompt logic
+
+<!-- pause -->
+
+**Workflow service**
+
+- Owns: Sequence, branching, retries, fallback
+- Avoids: HTTP transport concerns
+
+<!-- pause -->
+
+**Prompt module**
+
+- Owns: Task instructions, placeholders, version id
+- Avoids: Business policy, branching
+
+<!-- column: 1 -->
+<!-- pause -->
+**Validators**
+
+- Owns: Schema and policy checks
+- Avoids: Model invocation
+
+<!-- pause -->
+
+**Gateway adapter**
+
+- Owns: Model routing, trace metadata, audit envelope
+- Avoids: Domain decision logic
+
+<!-- reset_layout -->
 
 <!-- pause -->
 
@@ -178,7 +217,7 @@ Model output is untrusted until it passes validation.
 ## Validation gates
 
 **Pre-call** — before the model is invoked:
-
+<!-- pause -->
 - Input shape and required fields
 - Size and type constraints
 - Policy constraints (allowed routes, feature flags)
@@ -186,7 +225,7 @@ Model output is untrusted until it passes validation.
 <!-- pause -->
 
 **Post-call** — after the model responds:
-
+<!-- pause -->
 - Schema and parse validity
 - Policy checks (allowed categories, content rules)
 - Confidence threshold — trigger fallback if below minimum

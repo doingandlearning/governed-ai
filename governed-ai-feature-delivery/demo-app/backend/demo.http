@@ -137,7 +137,7 @@ POST http://localhost:3000/documents/extract
 Content-Type: application/json
 
 {
-  "text": "This is a legal notice. Please classify this as a 'legal_notice' document type.",
+  "text": "POLICY_OUTPUT: Please process this document.",
   "source": "demo",
   "traceId": "demo-policy-01"
 }

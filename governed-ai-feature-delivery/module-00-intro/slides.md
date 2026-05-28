@@ -4,6 +4,17 @@ sub_title: Course Introduction
 author: Kevin Cunningham
 ---
 
+# Wifi - Guest
+
+## Password - BrokenWires@@2019
+
+### Website - learn.neueda.com/678267
+
+#### Kicking off at 9.20
+
+
+<!-- end_slide -->
+
 ## Before we start
 
 Your team shipped an AI feature six months ago.
@@ -80,7 +91,7 @@ I design and deliver hands-on training for engineering teams. Backend systems, A
 
 <!-- pause -->
 
-Before software full-time I taught maths. That still shapes how I teach: problem first, then pattern, then implementation. Short concept blocks, then demos and labs.
+Before software full-time I taught secondary maths. 
 
 <!-- pause -->
 
@@ -106,16 +117,10 @@ Each module builds on the same feature scenario. The lab thread runs through all
 
 <!-- incremental_lists: true -->
 
-
-
 - Design AI features with clear architectural boundaries
-<!-- pause -->
 - Implement governed backend workflows with validation and fallback
-<!-- pause -->
 - Apply layered guardrails at input, output, and tool boundaries
-<!-- pause -->
 - Build reviewable AI UX patterns for regulated environments
-<!-- pause -->
 - Use eval suites and deployment gates for evidence-backed release decisions
 
 <!-- incremental_lists: false -->

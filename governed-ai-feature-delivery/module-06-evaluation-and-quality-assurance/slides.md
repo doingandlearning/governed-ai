@@ -2,6 +2,7 @@
 title: "**Evaluation and Quality Assurance**"
 sub_title: Module 6 — Governed AI Feature Delivery
 author: Kevin Cunningham
+
 ---
 
 ## A question about your confidence threshold
@@ -62,6 +63,34 @@ Those are eval criteria. You already wrote them. You just haven't run them syste
 **Think:** what inputs would you need to test all five of those rules reliably?
 
 <!-- speaker_note: Pair activity - 90 seconds. -->
+
+<!-- end_slide -->
+
+# What fields do we need to test:
+## `documentType`, `confidence`, `entities`, policy checks, `needs_review`
+
+```ts
+{
+	"input" {
+		"text":,
+		"source":,
+		"traceId":
+	},
+	"mockOutput": {
+		"documentType": enum,
+		"confidence" number,
+		"entities": string[],
+		"summary": string,
+	},
+	"expected": {
+		"status":
+		"reason":
+	}
+}
+```
+
+
+- 
 
 <!-- end_slide -->
 
